@@ -37,20 +37,20 @@ Aplicación web de un crónometro de tipo Pomodoro para la concentración.
 ## Memoria
 
 - Al empezar, lee `MEMORY.md` para conocer el estado del proyecto y las decisiones
-tomadas.
+  tomadas.
 - Al terminar una tarea, actualízalo: estado actual, decisiones importantes (con su
-porqué) y errores a evitar.
+  porqué) y errores a evitar.
 - Mantenlo breve (máximo ~50 líneas): resume o elimina lo que ya no aporte.
 - Si algo se convierte en una regla permanente, propón moverlo a `AGENTS.md` en lugar de
-dejarlo en la memoria.
+  dejarlo en la memoria.
 - No guardes nunca datos sensibles (claves, tokens, datos personales).
 - No añadas en la memoria ningún dato que esté en cv-data, si es necesario pregunta antes.
 
 ## Verificación
 
 - Test propios del proyecto que se deben lanzar al hacer build. Después de cada cambio, verifica con el MCP de Chrome
-DevTools: prueba la funcionalidad, revisa la consola y comprueba la vista móvil.
+  DevTools: prueba la funcionalidad, revisa la consola y comprueba la vista móvil.
 
 ## Comandos
 
-- 
+-

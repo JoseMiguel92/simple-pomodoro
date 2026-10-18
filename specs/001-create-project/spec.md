@@ -25,6 +25,7 @@ El objetivo de esta spec es dejar todo lo anterior configurado, verificable y li
 
 **RF-1 — Formateo automático en commit y verificación en push**
 El sistema deberá verificar y corregir el formato del código antes de completar cada commit. El sistema deberá verificar el formato antes de permitir cada push, bloqueándolo si hay incidencias.
+
 - CA-1.1: Cuando el desarrollador ejecute un commit con cambios correctamente formateados, el commit deberá completarse sin intervención adicional.
 - CA-1.2: Cuando el desarrollador ejecute un commit que incluya un fichero con formato incorrecto, el sistema deberá formatearlo automáticamente antes de finalizar el commit.
 - CA-1.3: Si tras el auto-formateo un fichero permanece con formato incorrecto, el commit deberá bloquearse indicando el fichero afectado.
@@ -32,6 +33,7 @@ El sistema deberá verificar y corregir el formato del código antes de completa
 
 **RF-2 — Comprobación de calidad en commit y push**
 Para evitar la acumulación de código que incumpla las reglas de calidad, el sistema deberá comprobar la calidad del código en cada commit y cada push, bloqueando los errores graves.
+
 - CA-2.1: Cuando la comprobación detecte errores graves de calidad en un commit, el commit deberá bloquearse indicando el error detectado.
 - CA-2.2: Cuando la comprobación no detecte errores graves de calidad, el commit deberá completarse.
 - CA-2.3: Cuando un error de calidad requiera intervención manual, el sistema deberá indicarlo.
@@ -40,26 +42,31 @@ Para evitar la acumulación de código que incumpla las reglas de calidad, el si
 
 **RF-3 — Tests antes del push**
 Para evitar subir código con pruebas rotas, el sistema deberá ejecutar los tests antes de permitir cada push.
+
 - CA-3.1: Cuando todos los tests finalicen sin fallos, el push deberá permitirse.
 - CA-3.2: Si algún test falla, el push deberá bloquearse indicando el test o tests fallidos.
 
 **RF-4 — Sistema de estilos base operativo**
 El sistema de estilos fijado en la constitución deberá estar instalado y funcionando desde el inicio.
+
 - CA-4.1: Cuando un componente utilice clases del sistema de estilos y se sirva la aplicación, los estilos deberán aplicarse correctamente.
 - CA-4.2: Cuando se ejecute el build de producción con el sistema de estilos instalado, el proceso deberá finalizar sin errores.
 
 **RF-5 — Reglas y convenciones documentadas**
 El proyecto deberá mantener documentadas sus reglas innegociables y sus convenciones de trabajo.
+
 - CA-5.1: Cuando un nuevo desarrollador lea la documentación de reglas, deberá encontrar todas las reglas innegociables de la constitución (incluida la de resolución de conflictos entre reglas), las convenciones de trabajo y la excepción autorizada para añadir dependencias de herramientado (hooks de git, formateo, calidad de código y sistema de estilos).
 - CA-5.2: Cuando se finalice una tarea en la que se tomó una decisión de proyecto, la decisión y su porqué deberán quedar registradas.
 
 **RF-6 — Memoria de proyecto**
 El proyecto deberá mantener una memoria de estado entre sesiones, con un tamaño limitado para que siga siendo útil.
+
 - CA-6.1: Cuando una tarea se complete y se actualice la memoria, esta deberá reflejar el estado actual, las decisiones tomadas y los errores a evitar.
 - CA-6.2: Si la memoria supera el tamaño recomendado (~50 líneas), deberá resumirse o eliminarse lo que ya no aporte.
 
 **RF-7 — Comandos de verificación estándar**
 El proyecto deberá disponer de comandos estándar para ejecutar las verificaciones de formato, calidad, tests y build.
+
 - CA-7.1: Cuando el desarrollador ejecute cada comando de verificación, este deberá informar claramente de si hay errores.
 - CA-7.2: Cuando todas las verificaciones estén en verde, ningún commit cuyo staging las supere deberá bloquearse.
 

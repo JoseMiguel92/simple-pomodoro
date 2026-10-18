@@ -57,12 +57,12 @@ Entorno: Windows + git bash. Todos los hooks ejecutan scripts npm, así que func
 
 ## Cobertura RF → plan
 
-| RF | Dónde se cubre |
-| --- | --- |
+| RF   | Dónde se cubre                                       |
+| ---- | ---------------------------------------------------- |
 | RF-1 | §1 (scripts de formato) + §2 (pre-commit / pre-push) |
-| RF-2 | §1 (ESLint, avisos no bloquean) + §2 (hooks) |
-| RF-3 | §2 (tests en pre-push) + §5 |
-| RF-4 | §3 (Tailwind + build + Chrome DevTools) |
-| RF-5 | §4 (AGENTS.md, excepción de dependencias) |
-| RF-6 | §4 (MEMORY.md) |
-| RF-7 | §1 (scripts) + §5 (verify) |
+| RF-2 | §1 (ESLint, avisos no bloquean) + §2 (hooks)         |
+| RF-3 | §2 (tests en pre-push) + §5                          |
+| RF-4 | §3 (Tailwind + build + Chrome DevTools)              |
+| RF-5 | §4 (AGENTS.md, excepción de dependencias)            |
+| RF-6 | §4 (MEMORY.md)                                       |
+| RF-7 | §1 (scripts) + §5 (verify)                           |

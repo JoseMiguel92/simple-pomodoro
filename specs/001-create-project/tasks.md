@@ -2,7 +2,7 @@
 
 Ejecución en la rama `spec/001-create-project`, en orden. Cada tarea termina con MEMORY.md actualizado y un commit con mensaje conventional-commits aprobado por el usuario (RN-6). T4 y T5 son paralelizables entre sí y con T1–T3; T6 va al final.
 
-## T1 — Calidad y formato: ESLint + scripts básicos
+## T1 — Calidad y formato: ESLint + scripts básicos (✅ completada)
 
 - **Objetivo**: ESLint operativo conviviendo con Prettier sin ámbitos solapados, y comandos de formato/calidad.
 - **Ficheros**: `eslint.config.js` (nuevo), `.prettierignore` (nuevo), `package.json` (devDependencies `eslint`, `typescript-eslint`, `angular-eslint`; scripts `format`, `format:check`, `lint`).
