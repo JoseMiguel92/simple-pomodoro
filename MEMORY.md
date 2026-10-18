@@ -7,7 +7,8 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Spec 001 en curso, rama `spec/001-create-project`.
 - Angular 22 + TS + Vite scaffoldado; Prettier operativo (`.prettierrc`); vitest vía `@angular/build:unit-test`.
 - **T1 completada**: ESLint 10 flat config (`eslint.config.js`) con typescript-eslint 8 + angular-eslint 22; scripts `format`, `format:check`, `lint` en verde; exclusiones (`dist`, `coverage`, `.angular`, `.husky`, `package-lock.json`) en `.prettierignore` e `ignores` de ESLint.
-- Pendiente: T2 (scripts verify/test:run), T3 (husky + lint-staged), T4 (Tailwind v4), T5 (docs AGENTS/README), T6 (cierre).
+- **T2 completada**: scripts `test:run` (`ng test --no-watch`, ejecución única vitest) y `verify` (formato + calidad + tests con echo por paso y parada en el primer fallo); `verify` probado en verde y en fallo (paso de formato y de lint identificados).
+- Pendiente: T3 (husky + lint-staged), T4 (Tailwind v4), T5 (docs AGENTS/README), T6 (cierre).
 
 ## Decisiones (y por qué)
 
@@ -16,6 +17,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Sin `--max-warnings` en el script `lint`: un warning sale con exit 0 y no bloquea (CA-2.5).
 - `templateAccessibility` NO incluido: el plan solo pide reglas Angular recomendadas; añadirlo podría introducir warnings no pedidos.
 - `npm run format` sobre el repo re-formateó 5 ficheros .md/.json preexistentes (sangrado de listas, tablas, JSON a 2 espacios). Solo cambios cosméticos.
+- `verify` encadena con `echo <paso> && npm run <script>`: para en el primer fallo y el echo indica el paso; `build` queda fuera de `verify` (comando propio, plan §5). Echoes en inglés corto (RN-4).
 
 ## Aprendizajes y errores a evitar
 
@@ -25,6 +27,5 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Próximos pasos
 
-- T2: scripts `test:run` y `verify` en package.json.
 - T3: husky + lint-staged con pruebas manuales de bloqueo (fail-closed).
 - T4, T5 y T6 según tasks.md.

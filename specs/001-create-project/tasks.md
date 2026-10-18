@@ -9,7 +9,7 @@ Ejecución en la rama `spec/001-create-project`, en orden. Cada tarea termina co
 - **RF**: RF-1 (parcial), RF-2, RF-7 (parcial). Excepción de dependencias: RN-1.
 - **Hecho cuando**: `npm run format:check` y `npm run lint` terminan en verde sobre el repo; un error grave de lint sale con código ≠ 0 y un warning no; `dist`, `coverage` y `package-lock.json` quedan excluidos de format y lint; MEMORY.md actualizado.
 
-## T2 — Comandos de verificación unificados
+## T2 — Comandos de verificación unificados (✅ completada)
 
 - **Objetivo**: un comando por verificación (formato, calidad, tests, build) y uno global que las encadene (HU-5).
 - **Ficheros**: `package.json` (scripts `test:run` = `ng test --no-watch`, `verify`; `build` ya existe).

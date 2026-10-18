@@ -9,7 +9,9 @@
     "test": "ng test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test:run": "ng test --no-watch",
+    "verify": "echo Format check... && npm run format:check && echo Lint... && npm run lint && echo Tests... && npm run test:run"
   },
   "private": true,
   "packageManager": "npm@11.13.0",
