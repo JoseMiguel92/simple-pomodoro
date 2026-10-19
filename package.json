@@ -11,6 +11,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
+    "test:coverage": "ng test --no-watch --coverage",
     "test:run": "ng test --no-watch",
     "verify": "echo Format check... && npm run format:check && echo Lint... && npm run lint && echo Tests... && npm run test:run"
   },
@@ -31,6 +32,7 @@
     "@angular/cli": "^22.2.3",
     "@angular/compiler-cli": "^22.2.0",
     "@tailwindcss/postcss": "^4.3.3",
+    "@vitest/coverage-v8": "^5.0.5",
     "angular-eslint": "^22.6.0",
     "eslint": "^10.13.0",
     "husky": "^9.1.7",
