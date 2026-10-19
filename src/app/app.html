@@ -1,10 +1,33 @@
+<!-- Overlay notice; it never blocks the controls below. -->
+<app-phase-notice [message]="timer.notice()" (dismiss)="timer.dismissNotice()" />
+
 <main class="flex flex-1 items-center justify-center px-4 py-8">
   <section
-    class="w-full max-w-sm rounded-3xl bg-surface p-8 text-center shadow-sm ring-1 ring-track"
+    class="flex w-full max-w-sm flex-col items-center gap-6 rounded-3xl bg-surface p-6 text-center shadow-sm ring-1 ring-track sm:p-8"
   >
-    <h1 class="text-2xl font-semibold">{{ title() }}</h1>
-    <p class="mt-3 text-sm text-text/70">Concentración y descanso, sin distracciones.</p>
+    <header class="flex flex-col gap-1">
+      <h1 class="text-2xl font-semibold">Pomodoro</h1>
+      <p class="text-sm text-text/70">Concentración y descanso, sin distracciones.</p>
+    </header>
+
+    <app-timer-dial
+      [progress]="timer.progress()"
+      [remaining]="timer.remaining()"
+      [phase]="timer.phase()"
+    />
+
+    <app-timer-controls
+      [running]="timer.running()"
+      (toggle)="timer.toggle()"
+      (reset)="timer.reset()"
+    />
+
+    <app-time-inputs
+      [focusMinutes]="timer.focusMinutes()"
+      [breakMinutes]="timer.breakMinutes()"
+      [disabled]="!timer.editable()"
+      (focusChange)="timer.setFocusMinutes($event)"
+      (breakChange)="timer.setBreakMinutes($event)"
+    />
   </section>
 </main>
-
-<router-outlet />
