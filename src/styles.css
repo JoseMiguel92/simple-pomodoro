@@ -1,1 +1,16 @@
 @import 'tailwindcss';
+
+/*
+ * Palette — the single source of colour for the whole app.
+ * To re-theme the screen, replace only the values inside this block:
+ * layout, controls and behaviour must stay the same (RF-9 / CA-9.2).
+ */
+@theme {
+  --color-bg: oklch(0.97 0.01 85);
+  --color-surface: oklch(0.995 0.004 85);
+  --color-text: oklch(0.28 0.02 60);
+  --color-accent: oklch(0.52 0.1 175);
+  --color-track: oklch(0.89 0.014 85);
+  --color-focus: oklch(0.55 0.13 35);
+  --color-break: oklch(0.52 0.09 240);
+}
