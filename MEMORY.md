@@ -4,7 +4,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual
 
-- **Spec 001 completada** (solo bases, sin funcionalidad Pomodoro), rama `spec/001-create-project`.
+- **Spec 001 completada y mergeada en `master`** (solo bases, sin funcionalidad Pomodoro); rama `spec/001-create-project` eliminada.
 - Stack: Angular 22 + TS + Vite; vitest vía `@angular/build:unit-test`; Tailwind CSS v4 (`src/styles.css` = `@import 'tailwindcss';`, CSS-first).
 - Calidad: Prettier único formateador (`.prettierrc`); ESLint 10 flat (`eslint.config.js`) solo calidad, typescript-eslint + angular-eslint.
 - Hooks husky 9 + lint-staged 17 activos (`core.hooksPath=.husky/_`, vía script `prepare`): pre-commit = auto-formateo + lint; pre-push = `npm run verify` (formato, calidad y tests).
@@ -30,4 +30,5 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Próximos pasos
 
-- Pendiente el commit de cierre de T6 (`MEMORY.md`, `plan.md` §3, `tasks.md`) con mensaje aprobado (RN-6); después, cerrar spec 001.
+- **Spec 002**: funcionalidad del Pomodoro (cronómetro y ciclos de trabajo/descanso). Crear rama `spec/002-...` antes de planificar.
+- `master` solo en local: falta el push a `origin`.
