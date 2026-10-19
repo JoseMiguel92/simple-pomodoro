@@ -40,7 +40,7 @@ Ejecución en la rama `spec/001-create-project`, en orden. Cada tarea termina co
 - **RF**: RF-5; RN-1.
 - **Hecho cuando**: AGENTS.md documenta la excepción textual acotada (el resto de dependencias sigue prohibido) y lista todos los comandos; la documentación se lee en castellano y el código en inglés (RN-4); MEMORY.md actualizado.
 
-## T6 — Memoria de proyecto y verificación final
+## T6 — Memoria de proyecto y verificación final (✅ completada)
 
 - **Objetivo**: cerrar la spec con la memoria al día y todos los criterios de finalización comprobados (HU-4).
 - **Ficheros**: `MEMORY.md`.

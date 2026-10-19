@@ -34,7 +34,8 @@ Entorno: Windows + git bash. Todos los hooks ejecutan scripts npm, así que func
 
 - Instalar devDependencies: `tailwindcss`, `@tailwindcss/postcss`, `postcss` (guía oficial de Tailwind para Angular; añadir `--force` solo si npm resuelve conflicto de peer con la v3).
   - Alternativa descartada: `@tailwindcss/vite` declarado en `angular.json` — integración menos consolidada en el builder de Angular; la guía oficial de Angular usa PostCSS.
-- Crear `postcss.config.mjs`: `export default { plugins: ["@tailwindcss/postcss"] }`. El builder `@angular/build:application` auto-detecta la configuración de PostCSS: no hay que tocar `angular.json`.
+- Crear **`postcss.config.json`**: `{ "plugins": { "@tailwindcss/postcss": {} } }`. El builder `@angular/build:application` (v22) auto-detecta la configuración de PostCSS solo en JSON (`postcss.config.json` / `.postcssrc.json`, parseado con `JSON.parse`): con `.mjs` el plugin no se ejecutaba y el CSS salía con `@tailwind utilities;` sin expandir (build en "verde" engañoso). No hay que tocar `angular.json`.
+  - Nota de aprendizaje: los estilos unlayered (`<style>` inline de plantillas, estilos de componente) pisan `@layer utilities` de v4 en la misma propiedad → usar el modificador `!` (`text-3xl!`) o revisarlo al diseñar pantallas.
 - `src/styles.css`: sustituir el comentario por `@import 'tailwindcss';`. Tailwind v4 no necesita `tailwind.config.js` (CSS-first).
 - Verificación: utility class de prueba en `app.html` (p. ej. `text-3xl font-bold`) + `npm run build` de producción sin errores (CA-4.2) + Chrome DevTools: estilos aplicados, consola limpia y vista móvil (CA-4.1).
 
