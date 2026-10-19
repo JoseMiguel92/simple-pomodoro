@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "prepare": "husky",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
@@ -31,10 +32,16 @@
     "@angular/compiler-cli": "^22.2.0",
     "angular-eslint": "^22.6.0",
     "eslint": "^10.13.0",
+    "husky": "^9.1.7",
     "jsdom": "^30.0.0",
+    "lint-staged": "^17.6.0",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.71.2",
     "vitest": "^5.0.0"
+  },
+  "lint-staged": {
+    "*": "prettier --check --write --ignore-unknown",
+    "*.ts": "eslint --fix"
   }
 }

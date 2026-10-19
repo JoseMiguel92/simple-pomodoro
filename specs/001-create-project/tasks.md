@@ -16,7 +16,7 @@ Ejecución en la rama `spec/001-create-project`, en orden. Cada tarea termina co
 - **RF**: RF-7.
 - **Hecho cuando**: `npm run test:run` ejecuta los tests vitest existentes una sola vez y queda en verde; `npm run verify` encadena formato + calidad + tests e indica claramente qué paso falla si falla; MEMORY.md actualizado.
 
-## T3 — Hooks de git: pre-commit y pre-push
+## T3 — Hooks de git: pre-commit y pre-push (✅ completada)
 
 - **Objetivo**: auto-formateo y calidad en commit; formato, calidad y tests antes del push (HU-2).
 - **Ficheros**: `.husky/pre-commit` (nuevo), `.husky/pre-push` (nuevo), `package.json` (devDependencies `husky`, `lint-staged`; script `prepare`; config `lint-staged`).
