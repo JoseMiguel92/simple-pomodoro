@@ -95,6 +95,7 @@ La pantalla deberá usar una paleta de colores calmada, definida como un conjunt
 - **RNF-3 — Precisión**: al final de una fase, el tiempo mostrado no debe desviarse más de ±1 segundo del tiempo real transcurrido.
 - **RNF-4 — Accesibilidad**: los botones deben tener nombre accesible y el estado PLAY/PAUSE debe ser identificable sin depender solo del color.
 - **RNF-5 — Sin dependencias nuevas**: el aviso sonoro y el resto de la funcionalidad deben resolverse sin dependencias externas nuevas.
+  - Nota (dependencia aprobada explícitamente por el usuario): la única dependencia añadida en esta spec es `@vitest/coverage-v8` como devDependency, necesaria para medir y bloquear la cobertura de RNF-6. No afecta a la funcionalidad.
 - **RNF-6 — Cobertura**: mínimo 90% de cobertura sobre la lógica, según la constitución.
 
 ## Casos límite
