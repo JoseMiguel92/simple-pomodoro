@@ -19,6 +19,7 @@ Ejecución en la rama `spec/002-pomodoro-timer`, en orden. Cada tarea es indepen
 - **RF**: RNF-6 (parcial).
 - **Depende de**: nada.
 - **Hecho cuando**: `npm run test:coverage` imprime la tabla de cobertura y sale con 0; `@vitest/coverage-v8` es la única dependencia añadida; el umbral y su `include` quedan para T2 (aún no hay lógica que medir).
+- **Estado**: ✅ Hecha. `@vitest/coverage-v8@^5.0.5` (misma versión que el `vitest` instalado) + script `test:coverage`; la tabla de cobertura se imprime y sale con 0; `format:check`, `lint` y `test:run` en verde. Umbral y `coverage.include` sin tocar (T2).
 
 ## T2 — Lógica pura del ciclo y validación de estado guardado (RF-1, RF-4, RF-5, RF-7, RF-8)
 
@@ -60,7 +61,7 @@ Ejecución en la rama `spec/002-pomodoro-timer`, en orden. Cada tarea es indepen
 - **Depende de**: nada (solo el contrato).
 - **Hecho cuando**: la tarjeta aparece en la parte superior, se oculta sola entre 3 y 5 s o al pulsarla, y un mensaje nuevo sustituye al anterior sin solaparse; el spec con reloj falso cubre autoocultado, click y sustitución; no tapa los controles a 375 px.
 
-## T7 — Paleta cerrada y base responsive (RF-9, RNF-2)
+## T7 — Paleta cerrada y base responsive (RF-9, RNF-2) (✅ completada)
 
 - **Objetivo**: el conjunto de colores sustituible en un solo punto.
 - **Ficheros**: `src/styles.css` (bloque `@theme`), `src/app/app.css` (base de pantalla).
