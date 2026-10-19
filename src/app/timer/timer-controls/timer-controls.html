@@ -1,0 +1,53 @@
+<div class="flex items-center justify-center gap-4">
+  <button
+    type="button"
+    class="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-bg transition-transform select-none active:scale-95"
+    [attr.aria-label]="running() ? 'Pausar' : 'Empezar'"
+    (click)="toggle.emit()"
+  >
+    @if (running()) {
+      <svg
+        aria-hidden="true"
+        class="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M7 5h4v14H7zM13 5h4v14h-4z" />
+      </svg>
+      <span>Pausar</span>
+    } @else {
+      <svg
+        aria-hidden="true"
+        class="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M8 5v14l11-7z" />
+      </svg>
+      <span>Empezar</span>
+    }
+  </button>
+
+  <button
+    type="button"
+    class="inline-flex items-center gap-2 rounded-full bg-surface px-6 py-3 font-medium text-text ring-1 ring-track transition-transform select-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+    aria-label="Reiniciar"
+    [disabled]="!running()"
+    (click)="reset.emit()"
+  >
+    <svg
+      aria-hidden="true"
+      class="h-5 w-5"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z"
+      />
+    </svg>
+    <span>Reiniciar</span>
+  </button>
+</div>
