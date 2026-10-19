@@ -23,14 +23,17 @@ Ejecución en la rama `spec/001-create-project`, en orden. Cada tarea termina co
 - **RF**: RF-1, RF-2, RF-3. Casos límite: CL-1, CL-3, CL-6, CL-7. Excepción de dependencias: RN-1.
 - **Hecho cuando**: un commit con fichero desformateado lo auto-formatea y completa el commit; si el formato persiste, el commit se bloquea indicando el fichero; un error grave de lint bloquea el commit y un warning no; un push con formato erróneo (commit previo con `--no-verify`) o con tests fallidos se bloquea; una herramienta rota (p. ej. `eslint.config.js` inválido) bloquea la integración (fail-closed); `npm install` deja los hooks activos sin pasos manuales; MEMORY.md actualizado.
 
-## T4 — Tailwind CSS v4 (paralelizable con T1–T3)
+## T4 — Tailwind CSS v4 (✅ completada; paralelizable con T1–T3)
 
 - **Objetivo**: sistema de estilos fijado en la constitución instalado y operativo (HU-3).
 - **Ficheros**: `postcss.config.mjs` (nuevo), `src/styles.css` (`@import 'tailwindcss';`), `src/app/app.html` (utility class de verificación), `package.json` (devDependencies `tailwindcss`, `@tailwindcss/postcss`, `postcss`).
 - **RF**: RF-4; CA-4.1, CA-4.2. Excepción de dependencias: RN-1.
 - **Hecho cuando**: `npm run build` de producción termina sin errores con Tailwind activo; la app servida aplica las utility classes verificadas con Chrome DevTools (estilos, consola sin errores y vista móvil); MEMORY.md actualizado.
+- **Desviaciones del plan aprobadas durante la ejecución**:
+  - El config es **`postcss.config.json`**, no `postcss.config.mjs`: `@angular/build:application` (v22) solo auto-detecta `postcss.config.json`/`.postcssrc.json` (`JSON.parse`); con `.mjs` el plugin no se ejecutaba y el CSS quedaba con `@tailwind utilities;` sin expandir. Aprobado por el usuario durante T4; `angular.json` sigue sin tocarse.
+  - La utility class en `app.html` usa el modificador important de v4 (`text-3xl! font-bold!`): el `<style>` del template placeholder es CSS unlayered y pisa `@layer utilities`. Temporal (comentario en el template).
 
-## T5 — Convenciones, comandos y excepción de dependencias documentadas (paralelizable)
+## T5 — Convenciones, comandos y excepción de dependencias documentadas (✅ completada)
 
 - **Objetivo**: reglas y excepción por escrito para cualquier colaborador (HU-1).
 - **Ficheros**: `AGENTS.md` (sección "## Comandos" con `start`, `build`, `format`, `format:check`, `lint`, `test:run`, `verify`; en "## Límites", la excepción acotada y autorizada en esta spec a dependencias de herramientado: hooks de git, formateo, calidad de código y sistema de estilos), `README.md` (apuntar los comandos de verificación si aplica).

@@ -17,7 +17,7 @@ Aplicación web de un crónometro de tipo Pomodoro para la concentración.
 
 ## Reglas
 
-- Lee `docs/constitution.md` y la spec activa (`specs/NN-*/`) antes de tocar código.
+- Lee `docs/constitution.md` (reglas innegociables del proyecto, incluida la de resolución de conflictos: si dos reglas chocan, manda la 1) y la spec activa (`specs/NN-*/`) antes de tocar código.
 - Se deben seguir principios SOLID y mantener siempre el código lo más simple posible. Si algún método se considera candidato a ser refactorizado, para minimizar su complejidad o porque ya no es necesario, se debe indicar para su posible modificación.
 - Sigue reglas de diseño actuales (2026) y simples.
 
@@ -31,7 +31,7 @@ Aplicación web de un crónometro de tipo Pomodoro para la concentración.
 ## Límites
 
 - Pregunta antes: crear archivos nuevo o cambiar el formato de los datos guardados.
-- Nunca: añadir dependencias, frameworks o un paso de build.
+- Nunca: añadir dependencias, frameworks o un paso de build. **Excepción autorizada (spec 001)**: sí se pueden añadir dependencias de herramientado —hooks de git, formateo, calidad de código y sistema de estilos—; cualquier otra dependencia sigue requiriendo aprobación previa.
 - Siempre: actualizar `MEMORY.md` al terminar cada tarea.
 
 ## Memoria
@@ -53,4 +53,14 @@ Aplicación web de un crónometro de tipo Pomodoro para la concentración.
 
 ## Comandos
 
--
+- `npm start` — servidor de desarrollo en http://localhost:4200; recarga al guardar cambios.
+- `npm run build` — build de producción en `dist/`; usar para confirmar que el proyecto compila.
+- `npm run watch` — build en modo watch (configuración de desarrollo) mientras se trabaja.
+- `npm run format` — formatea todos los ficheros con Prettier (corrección automática).
+- `npm run format:check` — comprueba el formato sin tocar nada; falla si hay ficheros desformateados.
+- `npm run lint` — calidad del código con ESLint; los errores graves salen con código ≠ 0.
+- `npm test` — tests en modo watch (para desarrollo).
+- `npm run test:run` — tests una sola vez (Vitest vía Angular); usar en verificación.
+- `npm run verify` — encadena `format:check` + `lint` + `test:run` y para en el primer fallo; verificación completa, que los hooks de git ejecutan antes de cada push.
+
+Nota: `npm install` activa los hooks de git automáticamente (script `prepare` → husky); `npm run ng` es el alias del CLI de Angular.
