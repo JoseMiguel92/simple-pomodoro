@@ -21,14 +21,15 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - `verify` encadena con `echo <paso> && npm run <script>`: para en el primer fallo y el echo indica el paso; `build` queda fuera de `verify` (comando propio, plan §5). Echoes en inglés corto (RN-4).
 - Hooks T3, según plan: lint-staged `"*": "prettier --check --write --ignore-unknown"` (auto-formatea y re-stagea → CL-3) y `"*.ts": "eslint --fix"` (error grave bloquea → CA-2.1; warning no → CA-2.5). Husky 9 ejecuta los hooks con `sh -e`: no necesita shebang.
 - T3 probado sin commits reales: auto-formateo en verde; formato persistente → exit 1 con fichero indicado (simulado con fichero de solo lectura, EPERM); lint error bloquea / warning no; pre-push verde; formato sin commitear y test fallido bloquean pre-push; `eslint.config.js` roto bloquea ambos hooks (fail-closed CL-7); stage vacío no falla (CL-1).
+- `endOfLine: "auto"` en `.prettierrc` (decisión del usuario): con `core.autocrlf=true` en Windows, tras un commit bloqueado el revert de lint-staged dejaba ficheros en CRLF y el siguiente `format:check`/pre-push fallaba (falso bloqueo). Con `"auto"` Prettier respeta el fin de línea existente y el quirk desaparece.
 
 ## Aprendizajes y errores a evitar
 
 - `@typescript-eslint/no-unused-vars` es ERROR en recommended (no warning); para probar que un warning no bloquea, usar `@angular-eslint/use-lifecycle-interface` (warn).
 - Avisos de git sobre LF/CRLF en Windows son normales (core.autocrlf); no son fallos.
 - `npm install` con las 3 nuevas deps añadió ~96 paquetes transitivas: no instalar nada más fuera de la excepción RN-1.
-- **Quirk Windows (T3)**: `core.autocrlf=true` + Prettier con fin de línea `lf`. Tras un commit BLOQUEADO, el revert de lint-staged (git stash/restore) deja ficheros sin stage (p. ej. `package.json`) en CRLF → el siguiente `format:check`/pre-push falla hasta pasar `npm run format`. Los commits verdes no lo provocan. Pendiente de aprobación: `endOfLine: "auto"` en `.prettierrc` o `core.autocrlf=input`.
+- Quirk Windows de CRLF (T3) resuelto con `endOfLine: "auto"` (ver Decisiones): tras un commit bloqueado, el revert de lint-staged dejaba ficheros en CRLF y `format:check` fallaba.
 
 ## Próximos pasos
 
-- T4, T5 y T6 según tasks.md. Decidir lo del fin de línea CRLF (arriba) al revisar T3.
+- T4, T5 y T6 según tasks.md.
