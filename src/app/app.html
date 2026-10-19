@@ -243,7 +243,10 @@
           <clipPath id="a"><path fill="#fff" d="M0 0h982v239H0z" /></clipPath>
         </defs>
       </svg>
-      <h1>Hello, {{ title() }}</h1>
+      <!-- Temporary Tailwind verification classes (T4): important suffix needed
+           because the placeholder <style> block above is unlayered and would
+           otherwise override layered utilities. -->
+      <h1 class="text-3xl! font-bold!">Hello, {{ title() }}</h1>
       <p>Congratulations! Your app is running. 🎉</p>
     </div>
     <div class="divider" role="separator" aria-label="Divider"></div>

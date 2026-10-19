@@ -6,7 +6,13 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "prepare": "husky",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "test:run": "ng test --no-watch",
+    "verify": "echo Format check... && npm run format:check && echo Lint... && npm run lint && echo Tests... && npm run test:run"
   },
   "private": true,
   "packageManager": "npm@11.13.0",
@@ -24,9 +30,21 @@
     "@angular/build": "^22.2.3",
     "@angular/cli": "^22.2.3",
     "@angular/compiler-cli": "^22.2.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "angular-eslint": "^22.6.0",
+    "eslint": "^10.13.0",
+    "husky": "^9.1.7",
     "jsdom": "^30.0.0",
+    "lint-staged": "^17.6.0",
+    "postcss": "^8.5.31",
     "prettier": "^3.8.1",
+    "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2",
+    "typescript-eslint": "^8.71.2",
     "vitest": "^5.0.0"
+  },
+  "lint-staged": {
+    "*": "prettier --check --write --ignore-unknown",
+    "*.ts": "eslint --fix"
   }
 }

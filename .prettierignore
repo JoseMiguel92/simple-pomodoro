@@ -1,0 +1,7 @@
+# Generated or tooling files (CL-2)
+dist/
+coverage/
+node_modules/
+package-lock.json
+.angular/
+.husky/
