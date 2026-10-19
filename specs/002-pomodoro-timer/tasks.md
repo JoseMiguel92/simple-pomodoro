@@ -28,6 +28,7 @@ Ejecución en la rama `spec/002-pomodoro-timer`, en orden. Cada tarea es indepen
 - **RF**: RF-1, RF-4, RF-5, RF-7, RF-8; RNF-3, RNF-6. Casos límite: CL-1, CL-2, CL-5, CL-8.
 - **Depende de**: T1 (para medir la cobertura).
 - **Hecho cuando**: existen las funciones puras de §3 del plan con `now` como parámetro; `npm run test:coverage` sale en verde con umbral 90 y `timer.logic.ts`/`timer-storage.ts` al 100 %; los tests cubren transición exacta a 0 ms, progreso, `MM:SS`, edición válida/inválida (1, 60, 0, 61, decimal, vacío, texto), estado corrupto → 25/5 con fase válida, y CL-8 con `now` que salta varias fases emitiendo una sola transición.
+- **Estado**: ✅ Hecha. 40 tests (100 % en `timer.logic.ts` y `timer-storage.ts`, 4 métricas). Desviación anotada: el `coverage.include` de `vitest.config.ts` por sí solo no basta — el builder de Angular instrumenta desde `angular.json`, así que los globs `coverageInclude` viven también ahí y `runnerConfig` apunta a `vitest.config.ts` (donde quedan los `thresholds`). `format:check`, `lint`, `test:run` y `build` en verde.
 
 ## T3 — Círculo y tiempo restante (RF-1)
 
