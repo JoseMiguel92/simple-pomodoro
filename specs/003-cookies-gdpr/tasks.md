@@ -27,7 +27,7 @@ Ejecución en la rama `spec/003-cookies-gdpr`, en orden. Cada tarea lleva sus te
 - **RF**: RF-2 (gate de lectura), RF-3 (CA-3.1, CA-3.2), RF-5 (CA-5.1, CA-5.2); RNF-5. Casos límite: CL-2, CL-7.
 - **Depende de**: T1.
 - **Hecho cuando**: `save` no escribe sin elección ni con rechazo y escribe con aceptación; `load` devuelve 25/5 salvo con aceptación; `readConsent`/`writeConsent`/`clearConsent` y `wipeAppData` (borra datos de la app, conserva la elección) toleran `localStorage` que lanza (CL-7); tests en verde.
-- **Estado**:
+- **Estado**: ✅ Hecha. Gate en `timer-storage.service.ts`: `save`/`load` consultan `canPersist`; nuevos `readConsent`/`writeConsent`/`clearConsent`/`wipeAppData` con clave propia `pomodoro.consent.v1` (borra clave de estado y cookies del origen, nunca `localStorage.clear()`; `try/catch` en todo → CL-7). 9 tests nuevos (14 en el spec). **Desviación aprobada**: adaptación de setup en `timer.service.spec.ts` (concede `'accept'` y no borra la elección en el test de `pagehide`) porque los 3 tests de persistencia de la 002 asumían escritura sin elección. `test:run` 135/135, `test:coverage` 100% en la lógica (umbral 90 intacto), `format:check` y `lint` limpios, `build` OK. Commit pendiente de aprobación.
 
 ## T3 — Popup modal bloqueante (RF-1, RF-4)
 
