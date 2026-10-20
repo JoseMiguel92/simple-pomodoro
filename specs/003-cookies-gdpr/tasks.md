@@ -63,7 +63,7 @@ Ejecución en la rama `spec/003-cookies-gdpr`, en orden. Cada tarea lleva sus te
 - **RF**: RF-1 a RF-7; RNF-1 a RNF-4. Casos límite: CL-1 a CL-7.
 - **Depende de**: T5.
 - **Hecho cuando**: el recorrido de §6 del plan funciona en móvil **375×667** y escritorio con consola limpia (aceptar, rechazar, revocar, elección corrupta, almacenamiento no disponible); `npm run verify`, `npm run test:coverage` y `npm run build` en verde; el resultado queda anotado.
-- **Estado**:
+- **Estado**: ✅ Hecha (2026-10-20). Recorrido de §6 verificado en Chrome DevTools (escritorio y 375×667, consola limpia): popup inicial, Escape no cierra, foco atrapado, aceptar con guardado inmediato y recarga restaurada, rechazar con borrado, elección corrupta → popup, revocar sin confirmación → popup y 25/5. `verify`, `test:coverage` y `build` en verde (141 tests; contraste AA comprobado). 2 bugs reales corregidos en el navegador: `preventDefault` incondicional en Tab (con un solo botón enfocable el foco quedaba atrapado en "Rechazar") y tap target del enlace del pie de 16 a 32 px (`py-2`). Commit `a771486`.
 
 ## T7 — Memoria del proyecto
 
@@ -72,4 +72,4 @@ Ejecución en la rama `spec/003-cookies-gdpr`, en orden. Cada tarea lleva sus te
 - **RF**: RNF-1 (documentación en castellano).
 - **Depende de**: T6.
 - **Hecho cuando**: `MEMORY.md` recoge el gate en el punto único de storage, la clave propia de la elección con su orden de escritura/borrado, la degradación CL-7 y la ausencia de dependencias nuevas, por debajo de ~50 líneas.
-- **Estado**:
+- **Estado**: ✅ Hecha (2026-10-20). `MEMORY.md` reescrito y resumido (46 líneas): estado de la 003 en rama `spec/003-cookies-gdpr` pendiente de reviewer y merge; decisiones con su porqué (clave propia `pomodoro.consent.v1` y orden borrar→escribir, gate único en `TimerStorageService`, composición en el shell sin `consent.service.ts`, pie visible también con rechazo, revocación sin confirmación); errores a evitar (NG0951 con `viewChild.required`, `preventDefault` incondicional en Tab, `try/catch` siempre en storage). Sin dependencias nuevas. `test:run` 141/141, `format:check` y `lint` limpios. La validación del reviewer y el merge quedan fuera del alcance de esta tarea.
