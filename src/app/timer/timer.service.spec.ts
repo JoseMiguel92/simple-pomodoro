@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { STORAGE_KEY } from './timer.model';
+import { CONSENT_KEY } from './timer-storage.service';
 import { TimerService } from './timer.service';
 import { TimerSoundService } from './timer-sound.service';
 
@@ -26,6 +27,8 @@ describe('TimerService', () => {
     vi.useFakeTimers();
     vi.setSystemTime(0);
     localStorage.clear();
+    // Grant the choice so these 002 tests exercise the accepted path (gate since spec 003).
+    localStorage.setItem(CONSENT_KEY, 'accept');
     TestBed.configureTestingModule({});
     service = TestBed.inject(TimerService);
     beep = vi.spyOn(TestBed.inject(TimerSoundService), 'beep');
@@ -242,7 +245,8 @@ describe('TimerService', () => {
 
   it('saves the state when the page is hidden', () => {
     service.setFocusMinutes('45');
-    localStorage.clear();
+    // Only the state: the consent choice must stay (spec 003 gate).
+    localStorage.removeItem(STORAGE_KEY);
 
     window.dispatchEvent(new Event('pagehide'));
 
