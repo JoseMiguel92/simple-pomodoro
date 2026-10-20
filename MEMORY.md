@@ -4,7 +4,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual
 
-- **Spec 002 implementada, aprobada y verificada** en la rama `spec/002-pomodoro-timer` (pendiente de merge a `master` y push); spec 001 ya mergeada y su rama eliminada.
+- **Spec 002 mergeada en `master`** (merge --no-ff, rama de spec eliminada), pendiente únicamente de push a `origin`; spec 001 ya mergeada y su rama eliminada.
 - Pantalla Pomodoro completa: círculo SVG que se vacía, PLAY/PAUSE + RESET, edición de minutos 1..60, ciclos auto con tarjeta y pitido, persistencia en `localStorage`.
 - Stack sin cambios: Angular 22 + TS + Vite; vitest vía `@angular/build:unit-test`; Tailwind v4 CSS-first (bloque `@theme` en `src/styles.css`).
 - Calidad sin cambios: Prettier único formateador (`.prettierrc`), ESLint 10 flat; husky 9 + lint-staged (pre-commit formato+lint, pre-push `npm run verify`).
@@ -35,5 +35,5 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Próximos pasos
 
-- Merge de `spec/002-pomodoro-timer` en `master` y push a `origin` (`master` solo existe en local).
+- Push de `master` a `origin` (`master` solo existe en local).
 - Revisar la mejora pendiente del radio 45 en la próxima spec.
