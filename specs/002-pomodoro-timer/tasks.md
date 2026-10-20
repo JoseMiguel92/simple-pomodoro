@@ -85,6 +85,7 @@ Ejecución en la rama `spec/002-pomodoro-timer`, en orden. Cada tarea es indepen
 - **RF**: RF-1 a RF-9; RNF-2, RNF-3, RNF-4. Casos límite: CL-6, CL-8.
 - **Depende de**: T8.
 - **Hecho cuando**: con `npm start`, la consola está limpia; el recorrido de §6 del plan funciona en emulación móvil **375×667** y en escritorio; el tiempo no se desvía más de ±1 s tras volver de una pestaña en segundo plano (una sola tarjeta); el resultado queda anotado.
+- **Estado**: ✅ Hecha. Recorrido completo verificado en navegador (móvil 375×667 y escritorio): consola limpia, PLAY/PAUSE/RESET, edición 1..60 con rechazo de inválidos (CL-2/CL-3), transiciones con UNA tarjeta (~4 s) y UN pitido por cambio sin solapamiento (CL-6/CL-7/CL-8), recarga con fase y tiempos (CA-8.2) y estado corrupto → 25/5 (CA-8.3). Precisión RNF-3: desfase +0,119 s tras 353 s en segundo plano; salto de 2 fases en un tick → 1 tarjeta + 1 pitido. `npm run verify`, `test:coverage` (100 % lógica) y `build` en verde. Observación no bloqueante: el campo puede mostrar el último texto inválido tecleado (p. ej. 61) mientras el estado usa el último valor válido; el dial/tiempo siempre correctos.
 
 ## T10 — Memoria del proyecto
 
@@ -93,3 +94,4 @@ Ejecución en la rama `spec/002-pomodoro-timer`, en orden. Cada tarea es indepen
 - **RF**: RNF-1 (documentación en castellano).
 - **Depende de**: T9.
 - **Hecho cuando**: `MEMORY.md` recoge el estado actual, las decisiones con su porqué (reloj absoluto como fuente de verdad, almacenamiento por fase, tokens `@theme`, Web Audio, `@vitest/coverage-v8` como dependencia aprobada) y los errores a evitar, por debajo de ~50 líneas.
+- **Estado**: ✅ Hecha. `MEMORY.md` reescrito en 39 líneas (< ~50): estado actual tras la spec 002, decisiones con su porqué (reloj absoluto `endsAt`, `now` como parámetro, almacenamiento por fase, tokens `@theme`, Web Audio, `@vitest/coverage-v8` aprobada, desviación `coverageInclude` en `angular.json`), aprendizajes, la mejora pendiente del radio 45 para la próxima spec, y próximos pasos (merge a master + push). `prettier --check` en verde.

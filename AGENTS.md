@@ -12,7 +12,7 @@ Aplicación web de un crónometro de tipo Pomodoro para la concentración.
 - Código simple, nombres descriptivos y comentarios solo donde aporten en inglés.
 - Diseño limpio y responsive; cualquier pantalla nueva debe verse bien en el móvil.
 - Si el proyecto no tiene inicializado el repositorio git, pregunta si se quiere inicializar.
-- Los commits deben seguir el estándar conventional-commits.
+- Los commits deben seguir el estándar conventional-commits e incluir el codigo de tarea que cubre, un commit por tarea.
 - Antes de hacer commit, genera el mensaje y pregunta si está bien y si hacer el commit.
 
 ## Reglas
