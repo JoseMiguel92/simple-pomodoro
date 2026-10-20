@@ -67,7 +67,11 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "runnerConfig": "vitest.config.ts",
-            "coverageInclude": ["src/app/timer/timer.logic.ts", "src/app/timer/timer-storage.ts"]
+            "coverageInclude": [
+              "src/app/timer/timer.logic.ts",
+              "src/app/timer/timer-storage.ts",
+              "src/app/consent/consent.logic.ts"
+            ]
           }
         }
       }

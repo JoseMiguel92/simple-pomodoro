@@ -6,7 +6,11 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     coverage: {
-      include: ['src/app/timer/timer.logic.ts', 'src/app/timer/timer-storage.ts'],
+      include: [
+        'src/app/timer/timer.logic.ts',
+        'src/app/timer/timer-storage.ts',
+        'src/app/consent/consent.logic.ts',
+      ],
       thresholds: {
         lines: 90,
         branches: 90,
