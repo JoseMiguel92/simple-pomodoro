@@ -1,0 +1,13 @@
+<!-- Small footer link; the shell alone decides visibility and the deletion (RF-6). -->
+@if (visible()) {
+  <footer class="flex justify-center bg-bg px-4 py-2">
+    <!-- Text and underline carry the meaning, never colour alone. -->
+    <button
+      type="button"
+      class="rounded px-1 text-xs text-text/70 underline underline-offset-2 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      (click)="revoke.emit()"
+    >
+      Cambiar decisión de cookies
+    </button>
+  </footer>
+}

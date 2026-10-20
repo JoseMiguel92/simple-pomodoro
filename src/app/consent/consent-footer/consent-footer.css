@@ -1,0 +1,8 @@
+/* The link must stay reachable on short screens (CA-6.1): the host sticks to
+   the bottom of the shell column without leaving the normal flow, so it is
+   always visible and never covers the content. Colours come only from the
+   palette tokens in src/styles.css. */
+:host {
+  position: sticky;
+  bottom: 0;
+}
