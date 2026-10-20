@@ -1,0 +1,35 @@
+<div class="grid w-full grid-cols-2 gap-3 text-left">
+  <div class="flex min-w-0 flex-col gap-1">
+    <label class="text-xs font-medium text-text/70" for="focus-minutes">
+      Concentración (min)
+    </label>
+    <input
+      id="focus-minutes"
+      type="number"
+      inputmode="numeric"
+      class="w-full rounded-xl bg-bg px-3 py-2 text-base text-text outline-none ring-1 ring-track focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
+      [min]="minMinutes"
+      [max]="maxMinutes"
+      [step]="1"
+      [value]="focusMinutes()"
+      [disabled]="disabled()"
+      (input)="onFocusInput($event)"
+    />
+  </div>
+
+  <div class="flex min-w-0 flex-col gap-1">
+    <label class="text-xs font-medium text-text/70" for="break-minutes">Descanso (min)</label>
+    <input
+      id="break-minutes"
+      type="number"
+      inputmode="numeric"
+      class="w-full rounded-xl bg-bg px-3 py-2 text-base text-text outline-none ring-1 ring-track focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
+      [min]="minMinutes"
+      [max]="maxMinutes"
+      [step]="1"
+      [value]="breakMinutes()"
+      [disabled]="disabled()"
+      (input)="onBreakInput($event)"
+    />
+  </div>
+</div>

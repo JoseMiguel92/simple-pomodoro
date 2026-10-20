@@ -1,0 +1,13 @@
+/*
+ * The per-second jump of `stroke-dashoffset` becomes a continuous drain.
+ * Nothing else lives here: colours and utilities come from the palette tokens.
+ */
+.dial-progress {
+  transition: stroke-dashoffset 1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dial-progress {
+    transition: none;
+  }
+}

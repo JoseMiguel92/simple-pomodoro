@@ -4,31 +4,36 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual
 
-- **Spec 001 completada y mergeada en `master`** (solo bases, sin funcionalidad Pomodoro); rama `spec/001-create-project` eliminada.
-- Stack: Angular 22 + TS + Vite; vitest vía `@angular/build:unit-test`; Tailwind CSS v4 (`src/styles.css` = `@import 'tailwindcss';`, CSS-first).
-- Calidad: Prettier único formateador (`.prettierrc`); ESLint 10 flat (`eslint.config.js`) solo calidad, typescript-eslint + angular-eslint.
-- Hooks husky 9 + lint-staged 17 activos (`core.hooksPath=.husky/_`, vía script `prepare`): pre-commit = auto-formateo + lint; pre-push = `npm run verify` (formato, calidad y tests).
-- Verificación en verde: `npm run verify`, `npm run build`, app servida con Chrome DevTools (consola limpia, utility aplicada, móvil 375x667).
-- Docs: `AGENTS.md` (comandos + excepción RN-1), `README.md`; `docs/constitution.md` referenciada, nunca duplicada.
+- **Spec 002 implementada, aprobada y verificada** en la rama `spec/002-pomodoro-timer` (pendiente de merge a `master` y push); spec 001 ya mergeada y su rama eliminada.
+- Pantalla Pomodoro completa: círculo SVG que se vacía, PLAY/PAUSE + RESET, edición de minutos 1..60, ciclos auto con tarjeta y pitido, persistencia en `localStorage`.
+- Stack sin cambios: Angular 22 + TS + Vite; vitest vía `@angular/build:unit-test`; Tailwind v4 CSS-first (bloque `@theme` en `src/styles.css`).
+- Calidad sin cambios: Prettier único formateador (`.prettierrc`), ESLint 10 flat; husky 9 + lint-staged (pre-commit formato+lint, pre-push `npm run verify`).
+- Verificación en verde: `npm run verify`, `npm run test:coverage` (100 % sobre la lógica, umbral 90), `npm run build` y Chrome DevTools (móvil 375×667 y escritorio, consola limpia). 105 tests.
 
 ## Decisiones (y por qué)
 
-- Config PostCSS en **`postcss.config.json`**, no `.mjs` (plan §3 corregido en T6): `@angular/build:application` v22 solo auto-detecta JSON; con `.mjs` el plugin no corría y el build salía en "verde" engañoso con `@tailwind utilities;` sin expandir. `angular.json` sin tocar.
-- Prettier único formateador, ESLint sin reglas de formato (CL-5); sin `--max-warnings` para que un warning no bloquee (CA-2.5).
-- `endOfLine: "auto"` (decisión del usuario): con `core.autocrlf=true`, el revert de lint-staged tras un commit bloqueado dejaba CRLF y el siguiente `format:check` fallaba (falso bloqueo).
-- Hooks: lint-staged `"*": prettier --check --write --ignore-unknown` (re-stagea tras formatear → CL-3) y `"*.ts": eslint --fix`; `set -e` en ambos hooks = fail-closed (CL-7); pre-push como segunda red ante `--no-verify` (CL-6).
-- Sin `@eslint/js` ni `templateAccessibility`: la excepción RN-1 limita a 3 devDeps de calidad y no se piden warnings extra.
-- Excepción RN-1 escrita una única vez en `AGENTS.md` "## Límites" (CA-5.1).
+- **Reloj absoluto como fuente de verdad**: el estado guarda `endsAt` (`Date.now()`) y por tick `remaining = max(0, endsAt - Date.now())` → deriva 0 s con la pestaña en segundo plano (RNF-3). Descartado decrementar un contador por tick (acumula deriva); `performance.now()` no sirve porque se reinicia al recargar.
+- **`now` como parámetro en la lógica pura** (`timer.logic.ts`, `timer-storage.ts`): funciones deterministas sin DOM, testeadas en Node (CL-8 resuelta con `advance(state, now)` → una sola transición por tick).
+- **Almacenamiento por fase, no instante** (`{focusMinutes, breakMinutes, phase}`): recargar en curso deja la fase recordada con su tiempo completo y parado (CA-8.2) sin perder ninguna fase.
+- **Tokens `@theme` de Tailwind v4** (7 tokens de color, cero colores literales en plantillas/CSS): paleta sustituible en un solo punto sin tocar la pantalla (RF-9).
+- **Sonido con Web Audio nativo** (Oscillator + Gain, `AudioContext` perezoso en el primer gesto): sin dependencias; si el navegador lo bloquea, solo no suena y la tarjeta se ve igual (CL-6).
+- **`@vitest/coverage-v8`**: única dependencia nueva de la spec, devDependency **aprobada explícitamente por el usuario** (RNF-5/RNF-6).
+- **Desviación T2**: los globs `coverageInclude` viven también en `angular.json` porque el builder de Angular instrumenta desde ahí; `vitest.config.ts` (vía `runnerConfig`) guarda `coverage.include` y `thresholds`.
+- Base spec 001 vigente: Prettier único y ESLint sin reglas de formato (CL-5); `endOfLine: "auto"` (evita falso bloqueo CRLF en Windows); hooks fail-closed con `set -e` y pre-push como segunda red; excepción RN-1 escrita una sola vez en `AGENTS.md`.
 
 ## Aprendizajes y errores a evitar
 
-- Si en `dist/.../styles-*.css` aparece `@tailwind utilities;` literal, el plugin NO se ejecutó y el build **no** falla: comprobar siempre `.clase{` expandida.
-- Estilos unlayered (`<style>` de plantilla o de componente) pisan `@layer utilities` de v4 en la misma propiedad → modificador `!` (`text-3xl!`) o revisarlo al diseñar pantallas.
-- `@typescript-eslint/no-unused-vars` es ERROR en recommended; para probar que un warning no bloquea, `@angular-eslint/use-lifecycle-interface` (warn).
-- Avisos de git sobre LF/CRLF en Windows con `core.autocrlf` son normales, no fallos.
-- No añadir ninguna dependencia fuera de la excepción RN-1.
+- Si en `dist/.../styles-*.css` aparece `@tailwind utilities;` literal, el plugin PostCSS NO se ejecutó y el build **no** falla: comprobar `.clase{` expandida; el config debe ser `postcss.config.json` (el builder solo auto-detecta JSON).
+- Estilos unlayered pisan `@layer utilities` de v4 en la misma propiedad → modifier `!` (`text-3xl!`) o evitar estilos propios sobre propiedades con utility en conflicto.
+- `@typescript-eslint/no-unused-vars` es ERROR en recommended; avisos de git sobre LF/CRLF con `core.autocrlf` en Windows son normales, no fallos.
+- No añadir ninguna dependencia fuera de la excepción RN-1 (la única aprobada en spec 002: `@vitest/coverage-v8`).
+- No confiar en que un comando de cobertura falle sin la dependencia instalada: verificar la tabla y los umbrales (`ng test --coverage` abortaba sin ella).
+
+## Mejora pendiente (para la próxima spec)
+
+- **Radio del SVG duplicado**: `src/app/timer/timer-dial/timer-dial.html` usa `45` a mano en `[attr.r]` mientras `timer-dial.ts` define `const RADIUS = 45` → dos puntos de verdad para un mismo valor. Unificar en la constante al crear la siguiente spec.
 
 ## Próximos pasos
 
-- **Spec 002**: funcionalidad del Pomodoro (cronómetro y ciclos de trabajo/descanso). Crear rama `spec/002-...` antes de planificar.
-- `master` solo en local: falta el push a `origin`.
+- Merge de `spec/002-pomodoro-timer` en `master` y push a `origin` (`master` solo existe en local).
+- Revisar la mejora pendiente del radio 45 en la próxima spec.
