@@ -1,0 +1,46 @@
+<!--
+  Full-screen overlay: it swallows every click, so the app underneath cannot be
+  interacted with and clicking outside never closes the dialog (CA-1.2).
+  All colours come from the palette tokens in src/styles.css.
+-->
+@if (visible()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-text/50 p-4"
+    (keydown)="onKeydown($event)"
+  >
+    <div
+      #dialog
+      data-testid="consent-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="consent-title"
+      aria-describedby="consent-notice"
+      tabindex="-1"
+      class="w-full max-w-sm rounded-3xl bg-surface p-6 shadow-lg ring-1 ring-track outline-none"
+    >
+      <h2 id="consent-title" class="text-lg font-semibold">
+        ¿Guardar tus ajustes en este navegador?
+      </h2>
+      <p id="consent-notice" class="mt-3 text-sm text-text/80">
+        Esta app guarda tus ajustes y tu progreso en tu navegador. Si no aceptas, no se guardará
+        nada.
+      </p>
+      <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+        <button
+          type="button"
+          class="flex-1 rounded-full bg-surface px-6 py-3 font-medium text-text ring-1 ring-track transition-transform select-none active:scale-95"
+          (click)="reject.emit()"
+        >
+          Rechazar
+        </button>
+        <button
+          type="button"
+          class="flex-1 rounded-full bg-accent px-6 py-3 font-medium text-bg transition-transform select-none active:scale-95"
+          (click)="accept.emit()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+}
