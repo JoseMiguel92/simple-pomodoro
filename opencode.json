@@ -7,5 +7,12 @@
         "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--no-usage-statistics"]
       }
     }
-  }
+  },
+  "compaction": {
+    "auto": true,
+    "keep": {
+      "tokens": 15000
+    }
+  },
+  "plugins": ["openslimedit@latest", "opencode-dcp@latest"]
 }
