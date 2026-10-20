@@ -96,6 +96,16 @@ export class TimerService {
     this.notice.set(null);
   }
 
+  /** Persists the current state right away, once acceptance is granted (CA-2.1). */
+  persistNow(): void {
+    this.persist();
+  }
+
+  /** Restarts from the default times and phase, stopping the countdown (consent revocation, CA-6.3). */
+  restoreDefaults(): void {
+    this.apply(createState());
+  }
+
   private restore(): TimerState {
     const stored = this.storage.load();
     return createState(stored.focusMinutes, stored.breakMinutes, stored.phase);

@@ -1,3 +1,6 @@
+<!-- Blocking dialog while there is no choice; its overlay covers everything below (RF-1). -->
+<app-consent-dialog [visible]="choice() === null" (accept)="onAccept()" (reject)="onReject()" />
+
 <!-- Overlay notice; it never blocks the controls below. -->
 <app-phase-notice [message]="timer.notice()" (dismiss)="timer.dismissNotice()" />
 
@@ -31,3 +34,6 @@
     />
   </section>
 </main>
+
+<!-- Revocation footer: any stored choice while the dialog is closed (RF-6, CA-6.1). -->
+<app-consent-footer [visible]="choice() !== null" (revoke)="onRevoke()" />
