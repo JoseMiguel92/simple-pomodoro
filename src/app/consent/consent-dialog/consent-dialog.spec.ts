@@ -29,6 +29,18 @@ describe('ConsentDialog', () => {
     dialog()?.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, ...init }));
   }
 
+  /** Dispatches a Tab keydown and reports whether the component took it over. */
+  function tab(shiftKey = false): boolean {
+    const event = new KeyboardEvent('keydown', {
+      key: 'Tab',
+      shiftKey,
+      bubbles: true,
+      cancelable: true,
+    });
+    dialog()?.dispatchEvent(event);
+    return event.defaultPrevented;
+  }
+
   function setVisible(visible: boolean): void {
     fixture.componentRef.setInput('visible', visible);
     fixture.detectChanges();
@@ -133,14 +145,21 @@ describe('ConsentDialog', () => {
   it('keeps Tab inside the dialog while it is open (RNF-3)', () => {
     setVisible(true);
 
+    // The move between the two buttons is left to the browser (not taken over).
+    button('Rechazar').focus();
+    expect(tab()).toBe(false);
+
+    button('Aceptar').focus();
+    expect(tab(true)).toBe(false);
+
     // Forward Tab on the last button wraps around to the first one.
     button('Aceptar').focus();
-    keydown({ key: 'Tab' });
+    expect(tab()).toBe(true);
     expect(document.activeElement).toBe(button('Rechazar'));
 
     // Backward Tab on the first button wraps around to the last one.
     button('Rechazar').focus();
-    keydown({ key: 'Tab', shiftKey: true });
+    expect(tab(true)).toBe(true);
     expect(document.activeElement).toBe(button('Aceptar'));
 
     expect(dialog()?.contains(document.activeElement)).toBe(true);

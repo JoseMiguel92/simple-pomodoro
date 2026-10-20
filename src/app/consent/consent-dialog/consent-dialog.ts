@@ -65,14 +65,20 @@ export class ConsentDialog {
       return;
     }
 
-    event.preventDefault();
     const active = document.activeElement;
     const backward = event.shiftKey;
+
+    // Take over only the entry from the dialog and the wrap-around edges; the
+    // plain move between the two buttons is left to the browser so Tab always
+    // works (an unconditional preventDefault would strand the focus).
     if (active === dialog) {
+      event.preventDefault();
       (backward ? last : first).focus();
     } else if (backward && active === first) {
+      event.preventDefault();
       last.focus();
     } else if (!backward && active === last) {
+      event.preventDefault();
       first.focus();
     }
   }
