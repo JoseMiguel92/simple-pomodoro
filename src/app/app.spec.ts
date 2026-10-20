@@ -158,6 +158,32 @@ describe('App', () => {
     expect(footerOf(element)).toBeNull();
   });
 
+  it('revoking while the countdown is running stops it, restores 25/5 and wipes data (CL-3)', async () => {
+    localStorage.setItem(CONSENT_KEY, 'accept');
+    localStorage.setItem(STORAGE_KEY, CUSTOM_JSON);
+    const timer = TestBed.inject(TimerService);
+    const { fixture, element } = await render();
+
+    // Stored choice with the dialog closed: PLAY starts the countdown (CA-6.1).
+    expect(dialogOf(element)).toBeNull();
+    expect(footerOf(element)).not.toBeNull();
+    timer.toggle();
+    expect(timer.running()).toBe(true);
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(CUSTOM_JSON); // running alone must not persist
+
+    clickButton(element, 'Cambiar decisión de cookies');
+    await settle(fixture);
+
+    expect(timer.running()).toBe(false); // the repaint interval must not survive the revocation
+    expect(timer.focusMinutes()).toBe(25);
+    expect(timer.breakMinutes()).toBe(5);
+    expect(timer.phase()).toBe('focus');
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(CONSENT_KEY)).toBeNull();
+    expect(dialogOf(element)).not.toBeNull();
+    expect(footerOf(element)).toBeNull();
+  });
+
   it('accepting again after revoking saves the defaults (CL-6)', async () => {
     localStorage.setItem(CONSENT_KEY, 'accept');
     localStorage.setItem(STORAGE_KEY, CUSTOM_JSON);
