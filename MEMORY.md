@@ -4,7 +4,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual
 
-- **Spec 003 (cookies/RGPD) implementada en la rama `spec/003-cookies-gdpr`** (T1–T7, 141 tests): popup bloqueante de consentimiento, gate de persistencia y revocación en el pie; pendiente de validación del @reviewer y merge --no-ff (no hay remoto configurado; `master` aún no la contiene).
+- **Spec 003 (cookies/RGPD) mergeada en `master` con --no-ff** (T1–T7, 142 tests, @reviewer APROBADO): popup bloqueante de consentimiento, gate de persistencia y revocación en el pie; rama `spec/003-cookies-gdpr` eliminada (sin remoto configurado todavía).
 - Specs 001 y 002 mergeadas en `master` con --no-ff y sus ramas eliminadas.
 - Pantalla Pomodoro completa: círculo SVG que se vacía, PLAY/PAUSE + RESET, edición 1..60, ciclos auto con pitido, persistencia tras gate de consentimiento.
 - Stack sin cambios: Angular 22 + TS + Vite; vitest vía `@angular/build:unit-test`; Tailwind v4 CSS-first (bloque `@theme` en `src/styles.css`).
@@ -39,8 +39,3 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 ## Mejora pendiente (para la próxima spec)
 
 - **Radio del SVG duplicado**: `src/app/timer/timer-dial/timer-dial.html` usa `45` a mano en `[attr.r]` mientras `timer-dial.ts` define `const RADIUS = 45` → unificar en la constante.
-
-## Próximos pasos
-
-- Validación del @reviewer de la spec 003 y merge --no-ff a `master` (sin remoto configurado todavía).
-- Revisar la mejora pendiente del radio 45 en la próxima spec.
