@@ -24,6 +24,7 @@ Aplicación web de un crónometro de tipo Pomodoro para la concentración.
 ## Forma de trabajar
 
 - Antes de planificar una spec, crea una rama de git con el código de la spec activa y trabaja en ella.
+- Los merges entre ramas se hacen siempre con `--no-ff`, para que la historia muestre la rama completa como unidad.
 - Haz solo lo que se pide: no añadas funcionalidades por tu cuenta.
 - Cambios pequeños y enfocados; no reescribas lo que ya funciona.
 - Al terminar, resume qué has cambiado y cualquier decisión que deba revisar.
