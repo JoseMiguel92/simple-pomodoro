@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { canPersist, ConsentChoice, parseConsent } from '../consent/consent.logic';
+import { DEFAULT_PALETTE_ID, PaletteId, parsePaletteId } from '../palette/palette.logic';
 import {
   DEFAULT_BREAK_MINUTES,
   DEFAULT_FOCUS_MINUTES,
@@ -14,6 +15,12 @@ import { parseStoredState, toStored } from './timer-storage';
  * wiping app data never destroys it (RF-5).
  */
 export const CONSENT_KEY = 'pomodoro.consent.v1';
+
+/**
+ * Own key for the chosen palette, inside the same single persistence point
+ * and behind the same consent gate (spec 004 RF-4).
+ */
+export const PALETTE_KEY = 'pomodoro.palette.v1';
 
 /**
  * Thin wrapper around `localStorage`. All browser-storage access stays in here,
@@ -52,6 +59,26 @@ export class TimerStorageService {
     return parseConsent(this.readRaw(CONSENT_KEY));
   }
 
+  /** Reads the stored palette id; without an accepted choice or with an invalid value the default wins (CA-5.2, CA-7.1). */
+  loadPalette(): PaletteId {
+    if (!canPersist(this.readConsent())) {
+      return DEFAULT_PALETTE_ID;
+    }
+    return parsePaletteId(this.readRaw(PALETTE_KEY)) ?? DEFAULT_PALETTE_ID;
+  }
+
+  /** Persists the chosen palette immediately once accepted (CA-4.1); a silent no-op otherwise (CA-5.1, CL-3). */
+  writePalette(id: PaletteId): void {
+    if (!canPersist(this.readConsent())) {
+      return;
+    }
+    try {
+      localStorage.setItem(PALETTE_KEY, id);
+    } catch {
+      // Private mode or quota exceeded: the palette lives on in memory only.
+    }
+  }
+
   /** Stores the choice; the only browser write allowed without acceptance (RF-5). */
   writeConsent(choice: ConsentChoice): void {
     try {
@@ -70,12 +97,17 @@ export class TimerStorageService {
     }
   }
 
-  /** Deletes app data (state key and this origin's cookies), keeping the choice (RF-3, RF-6). */
+  /** Deletes app data (state and palette keys and this origin's cookies), keeping the choice (RF-3, RF-6). */
   wipeAppData(): void {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {
       // Nothing stored to wipe (CL-7).
+    }
+    try {
+      localStorage.removeItem(PALETTE_KEY);
+    } catch {
+      // No stored palette to wipe; it cannot outlive the revocation (CA-6.1).
     }
     this.clearOwnCookies();
   }

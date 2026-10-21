@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createState } from './timer.logic';
 import { STORAGE_KEY } from './timer.model';
-import { CONSENT_KEY, TimerStorageService } from './timer-storage.service';
+import { CONSENT_KEY, PALETTE_KEY, TimerStorageService } from './timer-storage.service';
 
 describe('TimerStorageService', () => {
   let service: TimerStorageService;
@@ -108,6 +108,82 @@ describe('TimerStorageService', () => {
     expect(document.cookie).toBe('');
   });
 
+  it('restores the stored palette once accepted (CA-4.2)', () => {
+    service.writeConsent('accept');
+    localStorage.setItem(PALETTE_KEY, 'noche');
+
+    expect(service.loadPalette()).toBe('noche');
+  });
+
+  it('returns Sereno without an accepted choice or with nothing stored (CA-5.2)', () => {
+    localStorage.setItem(PALETTE_KEY, 'noche');
+    expect(service.loadPalette()).toBe('sereno');
+
+    service.writeConsent('reject');
+    expect(service.loadPalette()).toBe('sereno');
+
+    service.writeConsent('accept');
+    localStorage.removeItem(PALETTE_KEY);
+    expect(service.loadPalette()).toBe('sereno');
+  });
+
+  it('treats a corrupt or unknown stored palette as Sereno, silently (CA-7.1)', () => {
+    service.writeConsent('accept');
+
+    for (const raw of ['', 'gamma', 'SERENO', '{"id":"noche"}']) {
+      localStorage.setItem(PALETTE_KEY, raw);
+      expect(service.loadPalette()).toBe('sereno');
+    }
+  });
+
+  it('writes the palette immediately once accepted (CA-4.1)', () => {
+    service.writeConsent('accept');
+
+    service.writePalette('bosque');
+
+    expect(localStorage.getItem(PALETTE_KEY)).toBe('bosque');
+    expect(service.loadPalette()).toBe('bosque');
+  });
+
+  it('does not write the palette without an accepted choice (CA-5.1)', () => {
+    service.writePalette('bosque');
+    expect(localStorage.getItem(PALETTE_KEY)).toBeNull();
+
+    service.writeConsent('reject');
+    service.writePalette('bosque');
+    expect(localStorage.getItem(PALETTE_KEY)).toBeNull();
+  });
+
+  it('deletes the stored palette when wiping app data, keeping the choice (CA-6.1)', () => {
+    service.writeConsent('accept');
+    localStorage.setItem(PALETTE_KEY, 'noche');
+    localStorage.setItem(STORAGE_KEY, storedJson);
+
+    service.wipeAppData();
+
+    expect(localStorage.getItem(PALETTE_KEY)).toBeNull();
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+    expect(service.readConsent()).toBe('accept');
+  });
+
+  it('falls back to Sereno when reading the palette throws (CL-3)', () => {
+    service.writeConsent('accept');
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+
+    expect(service.loadPalette()).toBe('sereno');
+  });
+
+  it('degrades silently when writing the palette throws (CL-3)', () => {
+    service.writeConsent('accept');
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota exceeded');
+    });
+
+    expect(() => service.writePalette('noche')).not.toThrow();
+  });
+
   it('degrades to the defaults when reading throws (private mode)', () => {
     service.writeConsent('accept');
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
@@ -143,5 +219,7 @@ describe('TimerStorageService', () => {
     expect(() => service.writeConsent('accept')).not.toThrow();
     expect(() => service.clearConsent()).not.toThrow();
     expect(() => service.wipeAppData()).not.toThrow();
+    expect(service.loadPalette()).toBe('sereno');
+    expect(() => service.writePalette('noche')).not.toThrow();
   });
 });
