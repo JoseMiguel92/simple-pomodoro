@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ConsentDialog } from './consent/consent-dialog/consent-dialog';
 import { ConsentFooter } from './consent/consent-footer/consent-footer';
 import { ConsentChoice } from './consent/consent.logic';
+import { PalettePicker } from './palette/palette-picker/palette-picker';
+import { PaletteService } from './palette/palette.service';
 import { PhaseNotice } from './timer/phase-notice/phase-notice';
 import { TimeInputs } from './timer/time-inputs/time-inputs';
 import { TimerControls } from './timer/timer-controls/timer-controls';
@@ -15,7 +17,15 @@ import { TimerStorageService } from './timer/timer-storage.service';
  */
 @Component({
   selector: 'app-root',
-  imports: [PhaseNotice, TimerDial, TimerControls, TimeInputs, ConsentDialog, ConsentFooter],
+  imports: [
+    PhaseNotice,
+    TimerDial,
+    TimerControls,
+    TimeInputs,
+    ConsentDialog,
+    ConsentFooter,
+    PalettePicker,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.css',
   templateUrl: './app.html',
@@ -23,6 +33,7 @@ import { TimerStorageService } from './timer/timer-storage.service';
 export class App {
   protected readonly timer = inject(TimerService);
   private readonly storage = inject(TimerStorageService);
+  protected readonly palette = inject(PaletteService);
 
   /** Stored choice; `null` (missing or corrupt) keeps the dialog open (RF-1, RF-7). */
   protected readonly choice = signal<ConsentChoice | null>(this.storage.readConsent());
@@ -41,11 +52,13 @@ export class App {
     this.choice.set('reject');
   }
 
-  /** Deletes data and choice, restores defaults and brings the dialog back (CA-6.2, CA-6.3). */
+  /** Deletes data and choice, restores default times and palette, brings the dialog back (CA-6.2, CA-6.3). */
   protected onRevoke(): void {
     this.storage.wipeAppData();
     this.storage.clearConsent();
     this.timer.restoreDefaults();
+    // Sereno once the consent is cleared, so its gated write stays off (CA-6.1).
+    this.palette.restoreDefault();
     this.choice.set(null);
   }
 }
