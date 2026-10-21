@@ -14,3 +14,25 @@
   --color-focus: oklch(0.55 0.13 35);
   --color-break: oklch(0.52 0.09 240);
 }
+
+/*
+ * Smooth palette switch (spec 004, CA-2.1): re-painting all colour tokens at
+ * once must not jump. Limited to colour properties, so hover, press and
+ * dropdown transitions keep their behaviour, and skipped under reduced motion
+ * (RNF-4). Lives in `base` on purpose: unlayered styles would beat Tailwind's
+ * `@layer utilities` and kill `transition-transform` on the buttons.
+ */
+@layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    *,
+    ::before,
+    ::after {
+      transition:
+        background-color 300ms ease,
+        border-color 300ms ease,
+        color 300ms ease,
+        fill 300ms ease,
+        stroke 300ms ease;
+    }
+  }
+}
