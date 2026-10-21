@@ -1,0 +1,28 @@
+/*
+ * Dropdown motion for the palette list (CA-1.2, RNF-4): a quick fade plus a
+ * slight drop, only when the user has not asked for reduced motion. Hidden
+ * state also uses `visibility`, which takes the options out of the Tab order.
+ */
+.dropdown {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-0.25rem);
+  pointer-events: none;
+}
+
+.dropdown.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* `visibility` transitions discretely at the end, so the fade-out shows. */
+  .dropdown {
+    transition:
+      opacity 150ms ease,
+      transform 150ms ease,
+      visibility 150ms;
+  }
+}
