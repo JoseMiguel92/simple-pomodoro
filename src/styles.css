@@ -4,6 +4,9 @@
  * Palette — the single source of colour for the whole app.
  * To re-theme the screen, replace only the values inside this block:
  * layout, controls and behaviour must stay the same (RF-9 / CA-9.2).
+ * The 7 defaults below are the Sereno palette written in oklch; they mirror
+ * the hex values of `src/app/palette/palette.logic.ts`, the single source of
+ * truth for every palette (same colours, different notation).
  */
 @theme {
   --color-bg: oklch(0.97 0.01 85);
@@ -32,7 +35,8 @@
         border-color 300ms ease,
         color 300ms ease,
         fill 300ms ease,
-        stroke 300ms ease;
+        stroke 300ms ease,
+        box-shadow 300ms ease;
     }
   }
 }
