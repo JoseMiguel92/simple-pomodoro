@@ -2,11 +2,11 @@
 <div class="relative mx-auto aspect-square w-full max-w-64">
   <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true">
     <g transform="rotate(-90 50 50)">
-      <circle cx="50" cy="50" [attr.r]="45" class="fill-none stroke-track" stroke-width="6" />
+      <circle cx="50" cy="50" [attr.r]="radius" class="fill-none stroke-track" stroke-width="6" />
       <circle
         cx="50"
         cy="50"
-        [attr.r]="45"
+        [attr.r]="radius"
         class="dial-progress fill-none"
         [class.stroke-focus]="phase() === 'focus'"
         [class.stroke-break]="phase() === 'break'"

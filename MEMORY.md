@@ -4,38 +4,29 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual
 
-- **Spec 003 (cookies/RGPD) mergeada en `master` con --no-ff** (T1–T7, 142 tests, @reviewer APROBADO): popup bloqueante de consentimiento, gate de persistencia y revocación en el pie; rama `spec/003-cookies-gdpr` eliminada (sin remoto configurado todavía).
-- Specs 001 y 002 mergeadas en `master` con --no-ff y sus ramas eliminadas.
-- Pantalla Pomodoro completa: círculo SVG que se vacía, PLAY/PAUSE + RESET, edición 1..60, ciclos auto con pitido, persistencia tras gate de consentimiento.
-- Stack sin cambios: Angular 22 + TS + Vite; vitest vía `@angular/build:unit-test`; Tailwind v4 CSS-first (bloque `@theme` en `src/styles.css`).
-- Calidad sin cambios: Prettier único formateador (`.prettierrc`), ESLint 10 flat; husky 9 + lint-staged (pre-commit formato+lint, pre-push `npm run verify`).
-- Verificación en verde: `npm run verify`, `npm run test:coverage` (100 % sobre la lógica, umbral 90), `npm run build` y Chrome DevTools (móvil 375×667 y escritorio, consola limpia).
+- **Spec 004 (selector de paletas) implementada en la rama `spec/004-color-palettes` (T1–T8): pendiente de validación del reviewer y merge con `--no-ff`.** T6 verificada en navegador: 11/11 comprobaciones OK (móvil 375×667 y escritorio, consola limpia), `verify` + coverage + build en verde.
+- **Selector de paletas**: 4 paletas (Sereno default, Noche, Atardecer, Bosque); fuente única de datos en TS (los 7 hex por paleta viven solo en `palette.logic.ts`, sin duplicados en CSS); aplicación runtime re-escribiendo las 7 variables `--color-*` en `documentElement`; transición de color solo bajo `@media (prefers-reduced-motion: no-preference)`. Sin dependencias nuevas.
+- Specs 001, 002 y 003 (cookies/RGPD) mergeadas en `master` con `--no-ff`; ramas eliminadas (sin remoto configurado todavía). Pantalla Pomodoro completa: SVG que se vacía, PLAY/PAUSE + RESET, edición 1..60, ciclos auto con pitido.
+- Stack: Angular 22 + TS + Vite; vitest vía `@angular/build:unit-test`; Tailwind v4 CSS-first (`@theme` en `src/styles.css`). Calidad: Prettier único, ESLint 10 flat, husky 9 + lint-staged (pre-push `npm run verify`).
 
-## Decisiones (y por qué)
+## Decisiones importantes (y por qué)
 
-- **Reloj absoluto como fuente de verdad**: el estado guarda `endsAt` (`Date.now()`) y por tick `remaining = max(0, endsAt - Date.now())` → deriva 0 s con la pestaña en segundo plano (RNF-3). Descartado decrementar un contador por tick; `performance.now()` se reinicia al recargar.
-- **`now` como parámetro en la lógica pura** (`timer.logic.ts`): funciones deterministas sin DOM, testeadas en Node (CL-8 resuelta con `advance(state, now)`).
-- **Almacenamiento por fase, no instante** (`{focusMinutes, breakMinutes, phase}`): recargar en curso deja la fase recordada con su tiempo completo y parado (CA-8.2).
-- **Gate de consentimiento en `TimerStorageService`** (spec 003): único punto de persistencia → RF-5 queda garantizada por construcción y no hay puntos de fallo múltiples como en comprobar el consentimiento en cada llamante. Sin `'accept'`: `save` es no-op y `load` devuelve 25/5.
-- **Elección en clave propia `pomodoro.consent.v1`**, separada de la clave de datos: `wipeAppData` debe borrar los datos sin destruir la elección, y un estado de datos corrupto no debe disparar el popup sin motivo (RF-5, CL-1). Al rechazar, orden obligatorio: borrar datos → después escribir la elección (CA-3.1). Descartado `localStorage.clear()` (borraría claves ajenas al origen).
-- **Sin `consent.service.ts`** (re-scope aprobado por el coordinator): la orquestación vive en el shell (elección como señal + gestos accept/reject/revoke); `timer.service` solo expone `persistNow()`/`restoreDefaults()` que delegan en los privados existentes (CA-2.1), sin tocar su lógica.
-- **Pie de revocación visible con aceptar Y con rechazar** (CA-6.1): cambiar de opinión debe ser posible siempre, también tras un rechazo.
-- **Revocación sin confirmación**: decisión explícita de diseño (CA-6.2); el enlace ya es un gesto deliberado.
-- **Tokens `@theme` de Tailwind v4** (7 tokens de color, cero colores literales): paleta sustituible en un solo punto (RF-9).
-- **Sonido con Web Audio nativo** (Oscillator + Gain, `AudioContext` perezoso en el primer gesto): sin dependencias; si el navegador lo bloquea, solo no suena (CL-6).
-- **Cobertura**: `@vitest/coverage-v8` (única dependencia añadida en el proyecto, aprobada por el usuario); los globs `coverageInclude` viven también en `angular.json` porque el builder instrumenta desde ahí (patrón repetido en la 003).
-- Base spec 001 vigente: Prettier único y ESLint sin reglas de formato (CL-5); `endOfLine: "auto"`; hooks fail-closed con `set -e`; excepción RN-1 escrita una sola vez en `AGENTS.md`.
+- **Paleta persistida en clave propia `pomodoro.palette.v1` dentro de `TimerStorageService`**, con el MISMO gate `canPersist` que los datos del timer (punto único de persistencia → RF-5 por construcción); `wipeAppData` la borra también.
+- **Revocación: `restoreDefault()` DESPUÉS de `clearConsent()`** — si se limpia el consentimiento primero, el gate deja de bloquear y `writePalette` reescribe la clave (lección clave de T5 de la 004).
+- **Reloj absoluto (`endsAt` + `Date.now()`) como fuente de verdad del timer**: deriva 0 s en segundo plano (RNF-3). La lógica pura recibe `now` por parámetro (`advance`), determinista y testeable en Node.
+- **Gate de consentimiento (spec 003)**: sin `'accept'`, `save` es no-op y `load` devuelve 25/5; elección en clave propia `pomodoro.consent.v1` (los datos no destruyen la elección). Al rechazar: borrar datos → DESPUÉS escribir la elección. Sin `localStorage.clear()` (borraría claves ajenas al origen).
+- **Sin `consent.service.ts`** (re-scope de la 003): la orquestación vive en el shell; `timer.service` solo expone `persistNow()`/`restoreDefaults()`.
+- **Tokens `@theme` de Tailwind v4** (cero colores literales en utilities) + paleta runtime sobre esas mismas variables.
+- **Sonido con Web Audio nativo** (sin dependencias; si el navegador lo bloquea, solo no suena).
+- **Cobertura**: `@vitest/coverage-v8` (única dependencia añadida en el proyecto, aprobada); los globs `coverageInclude` viven también en `angular.json` porque el builder instrumenta desde ahí.
+- **NUEVA REGLA (2026-10, usuario): todos los mensajes de commit, de aquí en adelante, en INGLÉS**, manteniendo conventional-commits + código de tarea `T#`. Propuesta pendiente de moverla a `AGENTS.md`.
 
 ## Aprendizajes y errores a evitar
 
-- **`viewChild.required` dentro de un `effect` lanzaba NG0951** (popup de la 003): las queries requeridas aún no existen al reaccionar → foco inicial con `afterNextRender`.
-- **`preventDefault` incondicional en Tab rompe el focus trap** (bug real de T6): con un solo botón enfocable el foco se traba y no se llega a "Aceptar" con el teclado; prevenir solo cuando el foco está en el primer/último elemento.
-- **`localStorage` puede lanzar al acceder** (p. ej. modo incógnito): siempre `try/catch` en lectura/escritura → degradación a memoria sin excepción (CL-7).
-- Si en `dist/.../styles-*.css` aparece `@tailwind utilities;` literal, el plugin PostCSS NO se ejecutó y el build **no** falla: comprobar `.clase{` expandida; el config debe ser `postcss.config.json` (el builder solo auto-detecta JSON).
+- **`viewChild.required` dentro de un `effect` lanza NG0951**: las queries requeridas aún no existen al reaccionar → usar no-required + `effect` o foco inicial con `afterNextRender`.
+- **`preventDefault` incondicional en Tab rompe el focus trap** (bug real de la 003): prevenir solo cuando el foco está en el primer/último elemento enfocable.
+- **`localStorage` puede lanzar al acceder** (p. ej. modo incógnito): siempre `try/catch` en lectura/escritura → degradación a memoria sin excepción.
+- **CL-2 (004)**: el overlay de consentimiento de la 003 cubre el picker mientras el modal está abierto; comportamiento aceptado, preverlo en la verificación visual.
+- Si en `dist/.../styles-*.css` aparece `@tailwind utilities;` literal, el plugin PostCSS NO se ejecutó y el build **no** falla: comprobar `.clase{` expandida; el config debe ser `postcss.config.json`.
 - Estilos unlayered pisan `@layer utilities` de v4 en la misma propiedad → modifier `!` (`text-3xl!`) o evitar estilos propios sobre propiedades con utility en conflicto.
 - `@typescript-eslint/no-unused-vars` es ERROR en recommended; avisos de git sobre LF/CRLF con `core.autocrlf` en Windows son normales, no fallos.
-- No añadir ninguna dependencia fuera de la excepción RN-1; `ng test --coverage` abortaba sin `@vitest/coverage-v8` instalada (verificar la tabla y los umbrales, no confiar en el código de salida).
-
-## Mejora pendiente (para la próxima spec)
-
-- **Radio del SVG duplicado**: `src/app/timer/timer-dial/timer-dial.html` usa `45` a mano en `[attr.r]` mientras `timer-dial.ts` define `const RADIUS = 45` → unificar en la constante.

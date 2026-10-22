@@ -10,6 +10,7 @@ export default defineConfig({
         'src/app/timer/timer.logic.ts',
         'src/app/timer/timer-storage.ts',
         'src/app/consent/consent.logic.ts',
+        'src/app/palette/**',
       ],
       thresholds: {
         lines: 90,
