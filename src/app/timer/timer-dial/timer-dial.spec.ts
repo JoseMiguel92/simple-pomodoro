@@ -46,6 +46,14 @@ describe('TimerDial', () => {
     expect(Number(progressRing().getAttribute('stroke-dasharray'))).toBeCloseTo(CIRCUMFERENCE, 5);
   });
 
+  it('should render both rings with the shared radius', () => {
+    const rings = fixture.nativeElement.querySelectorAll('circle');
+    expect(rings.length).toBe(2);
+    for (const ring of rings) {
+      expect(Number(ring.getAttribute('r'))).toBe(RADIUS);
+    }
+  });
+
   it('should show the full ring at progress 0', async () => {
     await setInputs({ progress: 0 });
     expect(offset()).toBe(0);

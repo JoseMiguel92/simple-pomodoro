@@ -22,6 +22,7 @@ export class TimerDial {
   /** Current phase; drives the ring colour and the label. */
   readonly phase = input<Phase>('focus');
 
+  protected readonly radius = RADIUS;
   protected readonly circumference = 2 * Math.PI * RADIUS;
   protected readonly dashOffset = computed(() => {
     const elapsed = Math.min(1, Math.max(0, this.progress()));

@@ -73,7 +73,7 @@ Ejecución en la rama `spec/004-color-palettes`, en orden. Cada tarea lleva sus 
 - **RF**: ninguno (refactor interno; constitución 3).
 - **Depende de**: T6 (al final, para no interferir con la verificación visual).
 - **Hecho cuando**: los dos `[attr.r]` del template usan la constante `RADIUS` expuesta desde `timer-dial.ts`; sin cambio visual ni de comportamiento; tests en verde.
-- **Estado**:
+- **Estado**: ✅ completada
 
 ## T8 — Memoria del proyecto
 
