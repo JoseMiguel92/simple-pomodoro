@@ -9,7 +9,7 @@ Commitear spec 005, plan y tareas; actualizar `MEMORY.md`: la 004 ya está merge
 - RF: — (documentación)
 - Hecho cuando: `MEMORY.md` refleja la 004 mergeada y la 005 en curso; commit `docs(specs): add spec 005 with plan and tasks (T1)` propuesto y, si procede, hecho.
 
-## T2 — Recolocar el icono dentro de la tarjeta ✅ hecha (commit `ecabe89`)
+## T2 — Recolocar el icono dentro de la tarjeta ✅ hecha (commit `1428836`)
 
 Mover `app-palette-picker` dentro de la `<section>`, entre el subtítulo y el dial; quitar `gap-3`/`shrink-0` de `main` y actualizar el comentario (RF-1).
 
@@ -27,7 +27,7 @@ Cambiar el anclaje del dropdown de `left-0` a `left-1/2 -translate-x-1/2` y actu
 - RF: RF-2
 - Hecho cuando: `npm run verify` en verde; commit `refactor(palette): centre the dropdown under its trigger (T3)` propuesto y, si procede, hecho; `MEMORY.md` actualizado.
 
-## T4 — Verificación visual y cierre
+## T4 — Verificación visual y cierre ✅ hecha
 
 Verificar con MCP de Chrome DevTools en móvil 375×667 y escritorio: icono bajo el subtítulo y centrado, tarjeta centrada sola, desplegable centrado tapando el dial (CL-1) que se cierra al elegir, botón con aspecto intacto, comportamiento 004 sin regresiones y consola limpia.
 
