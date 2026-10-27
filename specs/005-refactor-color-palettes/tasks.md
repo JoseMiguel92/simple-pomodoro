@@ -18,7 +18,7 @@ Mover `app-palette-picker` dentro de la `<section>`, entre el subtítulo y el di
 - RF: RF-1, RF-3
 - Hecho cuando: `npm run verify` en verde; commit `refactor(app): move palette picker into card (T2)` propuesto y, si procede, hecho; `MEMORY.md` actualizado.
 
-## T3 — Centrar el desplegable bajo el icono
+## T3 — Centrar el desplegable bajo el icono ✅ hecha
 
 Cambiar el anclaje del dropdown de `left-0` a `left-1/2 -translate-x-1/2` y actualizar su comentario (RF-2, CA-2.1).
 
