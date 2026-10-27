@@ -9,7 +9,7 @@ Commitear spec 005, plan y tareas; actualizar `MEMORY.md`: la 004 ya está merge
 - RF: — (documentación)
 - Hecho cuando: `MEMORY.md` refleja la 004 mergeada y la 005 en curso; commit `docs(specs): add spec 005 with plan and tasks (T1)` propuesto y, si procede, hecho.
 
-## T2 — Recolocar el icono dentro de la tarjeta
+## T2 — Recolocar el icono dentro de la tarjeta ✅ hecha (commit `ecabe89`)
 
 Mover `app-palette-picker` dentro de la `<section>`, entre el subtítulo y el dial; quitar `gap-3`/`shrink-0` de `main` y actualizar el comentario (RF-1).
 

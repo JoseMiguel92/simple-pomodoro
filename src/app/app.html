@@ -4,16 +4,7 @@
 <!-- Overlay notice; it never blocks the controls below. -->
 <app-phase-notice [message]="timer.notice()" (dismiss)="timer.dismissNotice()" />
 
-<main class="flex flex-1 items-center justify-center gap-3 px-4 py-8">
-  <!--
-    Palette control left of the card (RF-1). `shrink-0` holds it at 44 px so the
-    card absorbs the shrink and the row fits a 375 px viewport (RNF-2).
-  -->
-  <app-palette-picker
-    class="shrink-0"
-    [active]="palette.active()"
-    (select)="palette.select($event)"
-  />
+<main class="flex flex-1 items-center justify-center px-4 py-8">
   <section
     class="flex min-w-0 w-full max-w-sm flex-col items-center gap-6 rounded-3xl bg-surface p-6 text-center shadow-sm ring-1 ring-track sm:p-8"
   >
@@ -21,6 +12,12 @@
       <h1 class="text-2xl font-semibold">Pomodoro</h1>
       <p class="text-sm text-text/70">Concentración y descanso, sin distracciones.</p>
     </header>
+
+    <!--
+      Palette control inside the card, under the subtitle (RF-1): the card's
+      `items-center` centres it, with the button aspect untouched (RF-3).
+    -->
+    <app-palette-picker [active]="palette.active()" (select)="palette.select($event)" />
 
     <app-timer-dial
       [progress]="timer.progress()"
