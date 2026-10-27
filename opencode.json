@@ -5,6 +5,10 @@
       "chrome-devtools": {
         "type": "local",
         "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--no-usage-statistics"]
+      },
+      "firefox-devtools": {
+        "type": "local",
+        "command": ["npx", "-y", "@mozilla/firefox-devtools-mcp@latest"]
       }
     }
   },
