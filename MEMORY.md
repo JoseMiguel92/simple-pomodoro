@@ -4,7 +4,8 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual
 
-- **Spec 004 (selector de paletas) implementada en la rama `spec/004-color-palettes` (T1–T8): pendiente de validación del reviewer y merge con `--no-ff`.** T6 verificada en navegador: 11/11 comprobaciones OK (móvil 375×667 y escritorio, consola limpia), `verify` + coverage + build en verde.
+- **Spec 004 (selector de paletas) mergeada en `master` (`a99bff0`), rama eliminada (T1–T8).** T6 verificada en navegador: 11/11 comprobaciones OK (móvil 375×667 y escritorio, consola limpia), `verify` + coverage + build en verde.
+- **Spec 005 (recolocación del selector) HECHA en la rama `spec/005-refactor-color-palettes` (T1–T4).** Verificación T4 con Chrome DevTools en escritorio y móvil 375×667: picker dentro de la tarjeta entre subtítulo y dial (RF-1), tarjeta única y centrada, desplegable centrado bajo el icono que tapa el dial (CL-1) y se cierra al elegir, botón circular 44×44 intacto, sin overflow horizontal (RNF-1), consola limpia; `npm run verify` en verde (184/184). Pendiente: merge a `master` con `--no-ff`.
 - **Selector de paletas**: 4 paletas (Sereno default, Noche, Atardecer, Bosque); fuente única de datos en TS (los 7 hex por paleta viven solo en `palette.logic.ts`, sin duplicados en CSS); aplicación runtime re-escribiendo las 7 variables `--color-*` en `documentElement`; transición de color solo bajo `@media (prefers-reduced-motion: no-preference)`. Sin dependencias nuevas.
 - Specs 001, 002 y 003 (cookies/RGPD) mergeadas en `master` con `--no-ff`; ramas eliminadas (sin remoto configurado todavía). Pantalla Pomodoro completa: SVG que se vacía, PLAY/PAUSE + RESET, edición 1..60, ciclos auto con pitido.
 - Stack: Angular 22 + TS + Vite; vitest vía `@angular/build:unit-test`; Tailwind v4 CSS-first (`@theme` en `src/styles.css`). Calidad: Prettier único, ESLint 10 flat, husky 9 + lint-staged (pre-push `npm run verify`).

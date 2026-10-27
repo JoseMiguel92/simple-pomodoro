@@ -116,6 +116,10 @@ describe('PalettePicker', () => {
     await open();
     expect(trigger().getAttribute('aria-expanded')).toBe('true');
     expect(list().classList.contains('is-open')).toBe(true);
+    // Anchored to the trigger and centred under it, not left-aligned (005, CA-2.1).
+    expect(list().classList.contains('top-full')).toBe(true);
+    expect(list().classList.contains('left-1/2')).toBe(true);
+    expect(list().classList.contains('-translate-x-1/2')).toBe(true);
 
     trigger().click();
     await render();

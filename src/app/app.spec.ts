@@ -242,7 +242,7 @@ describe('App', () => {
     expect(footerOf(element)).not.toBeNull();
   });
 
-  it('mounts the picker left of the card with the stored palette active (RF-1, CA-1.1, CA-4.2)', async () => {
+  it('mounts the picker inside the card under the subtitle with the stored palette active (RF-1, CA-1.1, CA-1.2, CA-1.3, CA-4.2)', async () => {
     localStorage.setItem(CONSENT_KEY, 'accept');
     localStorage.setItem(PALETTE_KEY, 'noche');
 
@@ -252,14 +252,24 @@ describe('App', () => {
     expect(picker).not.toBeNull();
     expect(picker.componentInstance.active()).toBe('noche');
 
-    // The control sits at the left of the timer card inside main (RF-1).
-    const children = Array.from(element.querySelector('main')?.children ?? []).map((child) =>
+    // The card is the only child of main: no control sits beside it (CA-1.3).
+    const mainChildren = Array.from(element.querySelector('main')?.children ?? []).map((child) =>
       child.tagName.toLowerCase(),
     );
-    const pickerIndex = children.indexOf('app-palette-picker');
-    const cardIndex = children.indexOf('section');
-    expect(pickerIndex).toBeGreaterThanOrEqual(0);
-    expect(cardIndex).toBeGreaterThan(pickerIndex);
+    expect(mainChildren).toEqual(['section']);
+
+    // Inside the card: picker between the subtitle and the dial, and the dial,
+    // controls and time inputs keep their current order afterwards (CA-1.1, CA-1.2).
+    const cardChildren = Array.from(element.querySelector('section')?.children ?? []).map((child) =>
+      child.tagName.toLowerCase(),
+    );
+    expect(cardChildren).toEqual([
+      'header',
+      'app-palette-picker',
+      'app-timer-dial',
+      'app-timer-controls',
+      'app-time-inputs',
+    ]);
     expect(pickerTrigger(element)).not.toBeNull();
   });
 

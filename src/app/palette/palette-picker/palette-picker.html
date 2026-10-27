@@ -1,9 +1,9 @@
 <!--
   Palette picker (RF-1, RF-8): trigger button plus animated dropdown. Each
   option rectangle gets its colours from the palette data via inline styles —
-  no hex literal is duplicated here (plan §2.1). The dropdown is anchored to
-  the trigger's left edge so it grows rightwards, keeping it inside a 375 px
-  viewport when the picker sits at the left of the timer card (RNF-2).
+  no hex literal is duplicated here (plan §2.1). The dropdown opens downward,
+  anchored to the trigger and centred under it (005, RF-2), staying inside a
+  375 px viewport when the picker sits inside the timer card (RNF-1).
 -->
 <div class="relative">
   <button
@@ -32,7 +32,7 @@
     [id]="listId"
     role="group"
     aria-label="Paletas de colores"
-    class="dropdown absolute top-full left-0 z-10 mt-2 w-48 rounded-2xl bg-surface p-2 shadow-lg ring-1 ring-track"
+    class="dropdown absolute top-full left-1/2 z-10 mt-2 w-48 -translate-x-1/2 rounded-2xl bg-surface p-2 shadow-lg ring-1 ring-track"
     [class.is-open]="open()"
   >
     @for (palette of palettes; track palette.id) {
