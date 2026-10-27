@@ -4,6 +4,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual
 
+- **Spec 006 (cadencia del conteo) en curso**, rama `006-timer-jumps`: corregir el salto del timer en Firefox mediante repintado alineado a límites de segundo (plan y tareas en `specs/006-timer-jumps/`).
 - **Spec 004 (selector de paletas) mergeada en `master` (`a99bff0`), rama eliminada (T1–T8).** T6 verificada en navegador: 11/11 comprobaciones OK (móvil 375×667 y escritorio, consola limpia), `verify` + coverage + build en verde.
 - **Spec 005 (recolocación del selector) mergeada en `master` (`98b1ece`), rama eliminada (T1–T4).** Verificación T4 con Chrome DevTools en escritorio y móvil 375×667: picker dentro de la tarjeta entre subtítulo y dial (RF-1), tarjeta única y centrada, desplegable centrado bajo el icono que tapa el dial (CL-1) y se cierra al elegir, botón circular 44×44 intacto, sin overflow horizontal (RNF-1), consola limpia; `npm run verify` en verde (184/184); validación @reviewer RF por RF: OK.
 - **Selector de paletas**: 4 paletas (Sereno default, Noche, Atardecer, Bosque); fuente única de datos en TS (los 7 hex por paleta viven solo en `palette.logic.ts`, sin duplicados en CSS); aplicación runtime re-escribiendo las 7 variables `--color-*` en `documentElement`; transición de color solo bajo `@media (prefers-reduced-motion: no-preference)`. Sin dependencias nuevas.
