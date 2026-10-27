@@ -38,6 +38,26 @@ export function remainingMs(state: TimerState, now: number): number {
   return Math.max(0, state.remainingMs);
 }
 
+/**
+ * Milliseconds until the next repaint that can change the visible MM:SS value.
+ * Each repaint must land on a second boundary: 0 when the phase is overdue
+ * (transition fires now), 1000 when sitting exactly on a boundary (that value
+ * was just painted, the next one is a full second away), the exact remainder
+ * otherwise. Recomputing it on every tick keeps the cadence aligned to the
+ * absolute clock without drift.
+ */
+export function nextTickDelay(state: TimerState, now: number): number | null {
+  if (!state.running || state.endsAt === null) {
+    return null;
+  }
+  const remaining = state.endsAt - now;
+  if (remaining <= 0) {
+    return 0;
+  }
+  const remainder = remaining % 1000;
+  return remainder === 0 ? 1000 : remainder;
+}
+
 /** Elapsed fraction of the current phase (0 full, 1 empty), clamped to 0..1. */
 export function progress(state: TimerState, now: number): number {
   const total = minutesForPhase(state) * MINUTE_MS;

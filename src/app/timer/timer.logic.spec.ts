@@ -3,6 +3,7 @@ import {
   advance,
   createState,
   formatTime,
+  nextTickDelay,
   parseMinutes,
   pause,
   progress,
@@ -125,6 +126,80 @@ describe('advance', () => {
 
     expect(result.state.phase).toBe('break');
     expect(result.state.remainingMs).toBe(BREAK_MS - 2 * MINUTE_MS);
+  });
+});
+
+describe('nextTickDelay', () => {
+  it('returns null while stopped', () => {
+    expect(nextTickDelay(createState(), NOW)).toBeNull();
+    expect(nextTickDelay({ ...createState(), running: true, endsAt: null }, NOW)).toBeNull();
+  });
+
+  it('returns null when stopped even with a stale end instant', () => {
+    const stopped = { ...createState(), endsAt: NOW + FOCUS_MS };
+
+    expect(nextTickDelay(stopped, NOW)).toBeNull();
+  });
+
+  it('returns 0 as soon as the end instant is reached or passed', () => {
+    const state = runningState({ endsAt: NOW + 5_000 });
+
+    expect(nextTickDelay(state, NOW + 5_000)).toBe(0);
+    expect(nextTickDelay(state, NOW + 6_000)).toBe(0);
+  });
+
+  it('returns the exact milliseconds to the next visible second boundary', () => {
+    const state = runningState({ endsAt: NOW + 10_000 });
+
+    expect(nextTickDelay(state, NOW + 4_500)).toBe(500);
+    expect(nextTickDelay(state, NOW + 9_001)).toBe(999);
+  });
+
+  it('returns a full second when sitting exactly on a boundary (no 0 delay loop)', () => {
+    expect(nextTickDelay(runningState(), NOW)).toBe(1000);
+    expect(nextTickDelay(runningState({ endsAt: NOW + 1_000 }), NOW)).toBe(1000);
+  });
+
+  it('keeps every positive delay aligned to a second boundary', () => {
+    const endsAt = NOW + 2_000;
+    const state = runningState({ endsAt });
+
+    for (let offset = 0; offset <= 2_500; offset += 1) {
+      const delay = nextTickDelay(state, NOW + offset);
+      if (offset >= 2_000) {
+        expect(delay).toBe(0); // overdue: the transition fires immediately
+        continue;
+      }
+      const repaintAt = NOW + offset + (delay as number);
+
+      expect(delay).toBeGreaterThan(0);
+      expect(delay).toBeLessThanOrEqual(1000);
+      expect((endsAt - repaintAt) % 1000).toBe(0); // lands exactly on a boundary
+    }
+  });
+
+  it('recalculates the delay per tick, so simulated lateness does not accumulate (CA-3.1)', () => {
+    const state = runningState({ endsAt: NOW + 10_000 });
+    let now = NOW + 4_500;
+    const delays: number[] = [];
+    const repaints: { at: number; value: number }[] = [];
+
+    for (let tick = 0; tick < 5; tick += 1) {
+      const delay = nextTickDelay(state, now) as number;
+      delays.push(delay);
+      const firedAt = now + delay + 17; // each repaint lands 17 ms late, as in Firefox
+      repaints.push({ at: firedAt, value: Math.ceil(remainingMs(state, firedAt) / 1000) });
+      now = firedAt;
+    }
+
+    expect(repaints.map((repaint) => repaint.value)).toEqual([5, 4, 3, 2, 1]);
+    for (let tick = 1; tick < repaints.length; tick += 1) {
+      const gap = repaints[tick].at - repaints[tick - 1].at;
+
+      expect(gap).toBeGreaterThanOrEqual(900);
+      expect(gap).toBeLessThanOrEqual(1100);
+    }
+    expect(Math.max(...delays)).toBeLessThanOrEqual(1017); // bounded, never drifting upward
   });
 });
 
