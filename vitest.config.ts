@@ -4,6 +4,7 @@ import { defineConfig } from 'vitest/config';
 // The include globs must also live in `angular.json` (`coverageInclude`): the
 // Angular test builder resolves them there, not in this file.
 export default defineConfig({
+  base: '/simple-pomodoro/',
   test: {
     coverage: {
       include: [
