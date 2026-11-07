@@ -430,6 +430,50 @@ describe('TimerService', () => {
       timers.restore();
     });
 
+    it('resyncs with a single adjustment after a big system clock jump and resumes the clean cadence (CL-3)', () => {
+      setVisibility('visible');
+      service.setFocusMinutes('1');
+      service.toggle(); // endsAt = 60_000
+
+      vi.advanceTimersByTime(3_500); // repaints at 1 s, 2 s and 3 s
+      expect(service.remaining()).toBe('00:57');
+
+      // The system clock jumps forward 5 s while the tab stays visible. The
+      // pending repaint keeps its real delay (500 ms), like a monotonic timer.
+      vi.setSystemTime(8_500);
+
+      // Small slices across the resync and the following seconds, recording
+      // every value the user would actually see.
+      const painted: string[] = [];
+      const times: number[] = [];
+      let previous = service.remaining();
+      for (let step = 0; step < 65; step++) {
+        vi.advanceTimersByTime(100);
+        const value = service.remaining();
+        if (value !== previous) {
+          painted.push(value);
+          times.push(Date.now());
+          previous = value;
+        }
+      }
+
+      // One single adjustment straight to the real value: the seconds skipped
+      // by the jump are exempt and the resynced value is painted only once.
+      expect(painted[0]).toBe('00:51');
+      expect(painted.filter((value) => value === '00:51')).toHaveLength(1);
+      for (const skipped of ['00:56', '00:55', '00:54', '00:53', '00:52']) {
+        expect(painted).not.toContain(skipped);
+      }
+
+      // Clean cadence resumes: consecutive descending values, 900–1100 ms apart.
+      expect(painted.slice(1, 7)).toEqual(['00:50', '00:49', '00:48', '00:47', '00:46', '00:45']);
+      for (let index = 1; index < times.length; index++) {
+        const gap = times[index] - times[index - 1];
+        expect(gap).toBeGreaterThanOrEqual(900);
+        expect(gap).toBeLessThanOrEqual(1_100);
+      }
+    });
+
     it('cancels the scheduled repaint on destroy, leaving no orphan timers', () => {
       const baseline = vi.getTimerCount();
       service.toggle();

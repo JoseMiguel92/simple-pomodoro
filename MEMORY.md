@@ -24,7 +24,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 ## Aprendizajes y errores a evitar
 
 - **Medir la cadencia en condiciones controladas**: el Firefox DevTools MCP concurrente con otra verificación (Chrome) introduce ruido en las mediciones (micro-pares 1105/885 ms); no es defecto de la app.
-- **Límites de verificación por MCP**: CL-2 (ventana sin foco) y CL-3 (salto de reloj del sistema) no son reproducibles; el pitido no es verificable (sin audio).
+- **Límites de verificación por MCP**: CL-2 (ventana sin foco) no es reproducible; el pitido no es verificable (sin audio). CL-3 (salto de reloj ≥5 s) cubierto por test con `vi.setSystemTime` (un único ajuste + cadencia limpia); no verificable en navegador por MCP.
 - **`viewChild.required` dentro de un `effect` lanza NG0951** → usar no-required + `effect` o foco inicial con `afterNextRender`.
 - **`preventDefault` incondicional en Tab rompe el focus trap** (bug de la 003): prevenir solo en el primer/último elemento enfocable.
 - **`localStorage` puede lanzar al acceder** (incógnito): `try/catch` en lectura/escritura → degradación a memoria sin excepción.
