@@ -4,7 +4,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual
 
-- **Spec 007 (publicación) lista en `007-github-pages`, pendiente de merge**: workflow `.github/workflows/publish.yml` (push a `master`), build `npm run build:pages` con base href `/simple-pomodoro/` y artefacto `dist/simple-pomodoro/browser`; verificación local en Chrome bajo el subpath (consola limpia, timer, paletas, móvil 375×667) + `verify` y build en verde. El deploy real se comprueba tras el merge.
+- **Spec 007 (publicación) mergeada en `master` (`b9d19bf`, `--no-ff`) y publicada**: workflow `.github/workflows/publish.yml` (push a `master`), build `npm run build:pages` con base href `/simple-pomodoro/` y artefacto `dist/simple-pomodoro/browser`. Verificada en local bajo el subpath y en la URL publicada (assets 200, consola limpia, timer, paletas, móvil 375×667); `verify` y build en verde.
 - **Spec 006 (cadencia del conteo) mergeada en `master` (`3dc19dd`, `--no-ff`)**: verificada en Firefox y regresión Chrome; `verify` + coverage (100 %) + build en verde. `nextTickDelay(state, now)` pura (`null` parado, `0` vencido, `1000` en límite, resto `% 1000`) con `setTimeout` encadenado.
 - Specs 001–005 mergeadas en `master` (`--no-ff`, ramas eliminadas): Pomodoro completo (SVG que se vacía, PLAY/PAUSE + RESET, edición 1..60, ciclos con pitido), cookies/RGPD y selector de 4 paletas (Sereno default, Noche, Atardecer, Bosque).
 - Stack: Angular 22 + TS + Vite; vitest vía `@angular/build:unit-test`; Tailwind v4 CSS-first (`@theme` en `src/styles.css`). Calidad: Prettier único, ESLint 10 flat, husky 9 + lint-staged (pre-push `npm run verify`).
