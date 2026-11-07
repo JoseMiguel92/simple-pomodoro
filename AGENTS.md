@@ -10,6 +10,7 @@ Aplicación web de un crónometro de tipo Pomodoro para la concentración.
 
 - Textos de la interfaz en español.
 - Código simple, nombres descriptivos y comentarios solo donde aporten en inglés.
+- El README es la cara pública del proyecto: mantener en castellano la URL de la app, los comandos y el diagrama del flujo SDD.
 - Diseño limpio y responsive; cualquier pantalla nueva debe verse bien en el móvil.
 - Si el proyecto no tiene inicializado el repositorio git, pregunta si se quiere inicializar.
 - Los commits deben seguir el estándar conventional-commits e incluir el codigo de tarea que cubre, un commit por tarea.
