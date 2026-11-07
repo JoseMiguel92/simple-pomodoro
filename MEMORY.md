@@ -4,7 +4,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 
 ## Estado actual
 
-- **Spec 006 (cadencia del conteo) implementada y verificada (T1–T6)**, rama `006-timer-jumps` pendiente de merge: Firefox en condiciones controladas y regresión Chrome sin diferencias; `verify` + coverage (100 %) + build en verde.
+- **Spec 006 (cadencia del conteo) mergeada en `master` (`3dc19dd`, `--no-ff`), rama eliminada**: verificada en Firefox y regresión Chrome sin diferencias; `verify` + coverage (100 %) + build en verde.
 - **006/T4 Firefox (condiciones controladas)**: 7,4 min, 442 cambios, deltas 935–1057 ms, 0 saltos ni repeticiones, deriva ≈0 (transiciones a 60,018/360,015/420,011 s), dial ±0,1 s, consola limpia; CL-1/CL-4/CL-5 OK.
 - **006/T5 Chrome (regresión)**: 65 s limpios → 00:59→00:01→01:00, deltas 960–1039 ms (74 mediciones), 0 saltos/repeticiones; pausa/reset/edición 1..60/aviso 4 s/recarga/consola limpia; escritorio y móvil 375×667 sin overflow.
 - **006/T2–T3**: `nextTickDelay(state, now)` pura en `timer.logic.ts` (`null` parado, `0` vencido, `1000` en límite justo, resto `% 1000`); servicio con un `setTimeout` encadenado reprogramado en cada tick, `apply()` y visibilitychange (sin `setInterval`/`TICK_MS`).
