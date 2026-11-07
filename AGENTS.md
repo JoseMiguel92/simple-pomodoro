@@ -56,6 +56,7 @@ Aplicación web de un crónometro de tipo Pomodoro para la concentración.
 
 - `npm start` — servidor de desarrollo en http://localhost:4200; recarga al guardar cambios.
 - `npm run build` — build de producción en `dist/`; usar para confirmar que el proyecto compila.
+- `npm run build:pages` — build de producción para GitHub Pages (base href `/simple-pomodoro/`).
 - `npm run watch` — build en modo watch (configuración de desarrollo) mientras se trabaja.
 - `npm run format` — formatea todos los ficheros con Prettier (corrección automática).
 - `npm run format:check` — comprueba el formato sin tocar nada; falla si hay ficheros desformateados.
@@ -65,3 +66,10 @@ Aplicación web de un crónometro de tipo Pomodoro para la concentración.
 - `npm run verify` — encadena `format:check` + `lint` + `test:run` y para en el primer fallo; verificación completa, que los hooks de git ejecutan antes de cada push.
 
 Nota: `npm install` activa los hooks de git automáticamente (script `prepare` → husky); `npm run ng` es el alias del CLI de Angular.
+
+## Despliegue
+
+- Web publicada: <https://josemiguel92.github.io/simple-pomodoro/> (GitHub Pages del repo `JoseMiguel92/simple-pomodoro`).
+- Publicación automática en cada push a `master` mediante `.github/workflows/publish.yml`; solo si `npm run verify` y el build pasan.
+- Build de Pages: `npm run build:pages` (base href `/simple-pomodoro/`). Artefacto publicado: `dist/simple-pomodoro/browser`.
+- Requisito, una sola vez: en _Settings → Pages_, configurar el origen como **GitHub Actions**.
