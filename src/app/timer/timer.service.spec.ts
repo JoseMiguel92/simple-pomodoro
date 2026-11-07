@@ -254,4 +254,255 @@ describe('TimerService', () => {
       JSON.stringify({ focusMinutes: 45, breakMinutes: 5, phase: 'focus' }),
     );
   });
+
+  describe('chained repaints aligned to second boundaries (spec 006)', () => {
+    it('paints a clean descending value under uneven clock steps (RF-1, RF-3)', () => {
+      const timers = lateTimers(JITTER_MS);
+      service.setFocusMinutes('1');
+      service.toggle();
+
+      // Uneven advances model Firefox's late repaints; each repaint must still
+      // land on the next second boundary of the absolute clock.
+      const observed: string[] = [];
+      for (const step of [1_017, 700, 500, 1_300, 1_000, 600, 400, 1_000, 1_000]) {
+        vi.advanceTimersByTime(step);
+        observed.push(service.remaining());
+      }
+      const painted = observed.filter((value, index) => value !== observed[index - 1]);
+      // Each value exactly once, consecutive descending, none repeated or skipped (CA-1.2).
+      expect(painted).toEqual(['00:59', '00:58', '00:57', '00:56', '00:55', '00:54', '00:53']);
+
+      // First repaint asks for the boundary delay; every later one asks for the
+      // same realigned remainder: the lateness never accumulates (CA-3.1).
+      expect(timers.requestedDelays[0]).toBe(1_000);
+      for (const delay of timers.requestedDelays.slice(1)) {
+        expect(delay).toBe(1_000 - JITTER_MS);
+      }
+
+      // The phase end fires within ±1 s of the true boundary (CA-3.2).
+      vi.advanceTimersByTime(51_500); // 59_017: last focus value
+      expect(service.phase()).toBe('focus');
+      expect(service.remaining()).toBe('00:01');
+      vi.advanceTimersByTime(1_000); // 60_017: the overdue tick fires and transitions
+      expect(service.phase()).toBe('break');
+      expect(service.remaining()).toBe('05:00');
+      expect(Date.now()).toBe(60_000 + JITTER_MS);
+
+      // The first value of the new phase starts a clean cadence too (CL-1).
+      vi.advanceTimersByTime(1_000);
+      expect(service.remaining()).toBe('04:59');
+
+      timers.restore();
+    });
+
+    it('reschedules on pause and resume without repeats, jumps or orphan timers (CA-4.1, CA-4.2)', () => {
+      const timers = lateTimers(JITTER_MS);
+      service.setFocusMinutes('1');
+      service.toggle();
+
+      vi.advanceTimersByTime(3_517); // three repaints: 00:59, 00:58, 00:57
+      expect(service.remaining()).toBe('00:57');
+
+      service.toggle(); // pause
+      expect(service.running()).toBe(false);
+      expect(vi.getTimerCount()).toBe(0); // nothing left to fire while stopped
+
+      vi.advanceTimersByTime(5_000); // paused time repaints nothing
+      expect(service.remaining()).toBe('00:57');
+
+      const resumeIndex = timers.requestedDelays.length;
+      service.toggle(); // resume
+      vi.advanceTimersByTime(1_017); // first repaint realigned to the absolute clock
+      expect(service.remaining()).toBe('00:56');
+      vi.advanceTimersByTime(1_000);
+      expect(service.remaining()).toBe('00:55');
+
+      // The delay requested at resume comes from the clock remainder
+      // (56_483 ms left), not a dragged full second from the pre-pause chain.
+      expect(timers.requestedDelays[resumeIndex]).toBe(483);
+      timers.restore();
+    });
+
+    it('reschedules on RESET without dragging old repaints (CA-4.1, CA-4.2)', () => {
+      const timers = lateTimers(JITTER_MS);
+      service.setFocusMinutes('1');
+      service.toggle();
+      vi.advanceTimersByTime(3_517);
+
+      service.reset();
+      expect(vi.getTimerCount()).toBe(0);
+      expect(service.remaining()).toBe('01:00');
+
+      service.toggle(); // PLAY again from the full time
+      vi.advanceTimersByTime(1_017);
+      expect(service.remaining()).toBe('00:59'); // clean first value, not 00:57
+      vi.advanceTimersByTime(1_000);
+      expect(service.remaining()).toBe('00:58');
+
+      // The new chain schedules from the new clock: one boundary per repaint.
+      expect(timers.requestedDelays.at(-1)).toBe(1_000 - JITTER_MS);
+      timers.restore();
+    });
+
+    it('reschedules on edit so the next PLAY starts clean (CA-4.1, CA-4.2)', () => {
+      const timers = lateTimers(JITTER_MS);
+      service.setFocusMinutes('1');
+      service.toggle();
+      vi.advanceTimersByTime(3_517);
+      service.toggle(); // pause
+      service.setBreakMinutes('10'); // edit while paused
+
+      expect(vi.getTimerCount()).toBe(0);
+
+      const resumeIndex = timers.requestedDelays.length;
+      service.toggle(); // resume
+      vi.advanceTimersByTime(1_017);
+      expect(service.remaining()).toBe('00:56'); // next value, painted once
+      vi.advanceTimersByTime(1_000);
+      expect(service.remaining()).toBe('00:55');
+
+      // The delay requested at resume comes from the clock remainder
+      // (56_483 ms left), not a dragged full second from the pre-pause chain.
+      expect(timers.requestedDelays[resumeIndex]).toBe(483);
+      timers.restore();
+    });
+
+    it('starts the repaint chain aligned after a reload and PLAY (CL-4)', () => {
+      const timers = lateTimers(JITTER_MS);
+      service.toggle();
+      vi.advanceTimersByTime(20_000);
+
+      const reloaded = newService(); // restored: full time and stopped (CA-8.2)
+      expect(reloaded.running()).toBe(false);
+      expect(reloaded.remaining()).toBe('25:00');
+      expect(vi.getTimerCount()).toBe(0);
+
+      const playIndex = timers.requestedDelays.length;
+      reloaded.toggle(); // PLAY
+      vi.advanceTimersByTime(500); // halfway to the first boundary: same value
+      expect(reloaded.remaining()).toBe('25:00');
+      vi.advanceTimersByTime(517); // first repaint exactly on the next boundary
+      expect(reloaded.remaining()).toBe('24:59');
+      vi.advanceTimersByTime(1_000);
+      expect(reloaded.remaining()).toBe('24:58');
+
+      // The delay requested at PLAY comes from the fresh clock: a full second
+      // to the first boundary, not a dragged remainder from before the reload.
+      expect(timers.requestedDelays[playIndex]).toBe(1_000);
+      timers.restore();
+    });
+
+    it('advances the progress one step per second (RF-2)', () => {
+      service.setFocusMinutes('1');
+      service.toggle();
+
+      for (let second = 1; second <= 5; second++) {
+        vi.advanceTimersByTime(1_000);
+        expect(service.progress()).toBeCloseTo(second / 60, 4);
+      }
+
+      // Between boundaries the dial holds: one repaint per second, not continuous.
+      const held = service.progress();
+      vi.advanceTimersByTime(500);
+      expect(service.progress()).toBe(held);
+    });
+
+    it('realigns the repaint when the tab becomes visible again (CL-5)', () => {
+      const timers = lateTimers(JITTER_MS);
+      service.setFocusMinutes('1');
+      service.toggle();
+      vi.advanceTimersByTime(1_500);
+      expect(vi.getTimerCount()).toBe(1);
+
+      vi.setSystemTime(45_000); // hidden time passes without repaints
+      setVisibility('visible');
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      expect(service.remaining()).toBe('00:15'); // correct value right away
+      expect(vi.getTimerCount()).toBe(1); // stale timer gone, chain realigned
+      // Back exactly on the 45_000 boundary, the next boundary is a full
+      // second away: the chain is rescheduled from the clock, not dragged.
+      expect(timers.requestedDelays.at(-1)).toBe(1_000);
+      vi.advanceTimersByTime(500);
+      expect(service.remaining()).toBe('00:15'); // holds until the boundary
+      vi.advanceTimersByTime(517); // the late repaint lands just past 46_000
+      expect(service.remaining()).toBe('00:14');
+      timers.restore();
+    });
+
+    it('resyncs with a single adjustment after a big system clock jump and resumes the clean cadence (CL-3)', () => {
+      setVisibility('visible');
+      service.setFocusMinutes('1');
+      service.toggle(); // endsAt = 60_000
+
+      vi.advanceTimersByTime(3_500); // repaints at 1 s, 2 s and 3 s
+      expect(service.remaining()).toBe('00:57');
+
+      // The system clock jumps forward 5 s while the tab stays visible. The
+      // pending repaint keeps its real delay (500 ms), like a monotonic timer.
+      vi.setSystemTime(8_500);
+
+      // Small slices across the resync and the following seconds, recording
+      // every value the user would actually see.
+      const painted: string[] = [];
+      const times: number[] = [];
+      let previous = service.remaining();
+      for (let step = 0; step < 65; step++) {
+        vi.advanceTimersByTime(100);
+        const value = service.remaining();
+        if (value !== previous) {
+          painted.push(value);
+          times.push(Date.now());
+          previous = value;
+        }
+      }
+
+      // One single adjustment straight to the real value: the seconds skipped
+      // by the jump are exempt and the resynced value is painted only once.
+      expect(painted[0]).toBe('00:51');
+      expect(painted.filter((value) => value === '00:51')).toHaveLength(1);
+      for (const skipped of ['00:56', '00:55', '00:54', '00:53', '00:52']) {
+        expect(painted).not.toContain(skipped);
+      }
+
+      // Clean cadence resumes: consecutive descending values, 900–1100 ms apart.
+      expect(painted.slice(1, 7)).toEqual(['00:50', '00:49', '00:48', '00:47', '00:46', '00:45']);
+      for (let index = 1; index < times.length; index++) {
+        const gap = times[index] - times[index - 1];
+        expect(gap).toBeGreaterThanOrEqual(900);
+        expect(gap).toBeLessThanOrEqual(1_100);
+      }
+    });
+
+    it('cancels the scheduled repaint on destroy, leaving no orphan timers', () => {
+      const baseline = vi.getTimerCount();
+      service.toggle();
+      expect(vi.getTimerCount()).toBe(baseline + 1);
+
+      TestBed.resetTestingModule(); // destroys the root injector (DestroyRef)
+
+      expect(vi.getTimerCount()).toBe(baseline);
+    });
+  });
 });
+
+/** Simulated repaint lateness, the Firefox delay the bug reports (~1005–1020 ms). */
+const JITTER_MS = 17;
+
+/**
+ * Wraps the fake `setTimeout` so every timer fires `late` ms after its own
+ * schedule (Firefox repaint lateness); it also records the delays the code
+ * requests, which is how the tests check that lateness never accumulates.
+ */
+function lateTimers(late: number): { requestedDelays: number[]; restore(): void } {
+  const fakeSetTimeout = setTimeout;
+  const requestedDelays: number[] = [];
+  const spy = vi.spyOn(globalThis, 'setTimeout').mockImplementation(((
+    handler: TimerHandler,
+    delay?: number,
+  ) => {
+    requestedDelays.push(delay ?? 0);
+    return fakeSetTimeout(handler, (delay ?? 0) + late);
+  }) as unknown as typeof setTimeout);
+  return { requestedDelays, restore: () => spy.mockRestore() };
+}

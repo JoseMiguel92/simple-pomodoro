@@ -4,6 +4,7 @@ import {
   advance,
   createState,
   formatTime,
+  nextTickDelay,
   parseMinutes,
   pause,
   progress as phaseProgress,
@@ -15,13 +16,10 @@ import {
 import { TimerSoundService } from './timer-sound.service';
 import { TimerStorageService } from './timer-storage.service';
 
-/** Repaint trigger period; the truth is always `endsAt`/`Date.now()` (§2.1). */
-const TICK_MS = 1000;
-
 /**
- * Owns the whole Pomodoro cycle: state in signals, a `setInterval` used only as
- * a repaint trigger, phase transitions, persistence and the beep. Components
- * stay presentational and talk to it through this API only.
+ * Owns the whole Pomodoro cycle: state in signals, one chained `setTimeout`
+ * used only as a repaint trigger, phase transitions, persistence and the beep.
+ * Components stay presentational and talk to it through this API only.
  */
 @Injectable({ providedIn: 'root' })
 export class TimerService {
@@ -32,7 +30,7 @@ export class TimerService {
   /** Last clock reading used to derive the remaining time while running. */
   private readonly now = signal(Date.now());
 
-  private intervalId: ReturnType<typeof setInterval> | null = null;
+  private repaintId: ReturnType<typeof setTimeout> | null = null;
 
   readonly phase = computed(() => this.state().phase);
   readonly running = computed(() => this.state().running);
@@ -56,7 +54,7 @@ export class TimerService {
     inject(DestroyRef).onDestroy(() => {
       document.removeEventListener('visibilitychange', onVisibilityChange);
       window.removeEventListener('pagehide', onPageHide);
-      this.stopInterval();
+      this.cancelRepaint();
     });
   }
 
@@ -128,7 +126,10 @@ export class TimerService {
     this.persist();
   }
 
+  /** Repaints the value for `now` and realigns the next repaint from the clock. */
   private tick(now: number): void {
+    // The scheduled repaint fired or is superseded; always realign below.
+    this.cancelRepaint();
     const current = this.state();
     if (!current.running) {
       return;
@@ -137,10 +138,12 @@ export class TimerService {
     this.now.set(now);
     if (jumped.transitioned) {
       this.enter(jumped.state);
+    } else {
+      this.scheduleRepaint();
     }
   }
 
-  /** Applies a new state: repaint trigger, persistence and repaint clock. */
+  /** Applies a new state: repaint schedule, persistence and repaint clock. */
   private apply(next: TimerState): void {
     const previous = this.state();
     this.state.set(next);
@@ -152,11 +155,7 @@ export class TimerService {
     ) {
       this.persist();
     }
-    if (next.running) {
-      this.startInterval();
-    } else {
-      this.stopInterval();
-    }
+    this.scheduleRepaint();
   }
 
   /** Phase change: exactly one card and one beep per transition (CL-8). */
@@ -170,17 +169,19 @@ export class TimerService {
     this.storage.save(this.state());
   }
 
-  private startInterval(): void {
-    if (this.intervalId !== null) {
-      return;
+  /** Schedules the next repaint exactly on the next visible second boundary. */
+  private scheduleRepaint(): void {
+    this.cancelRepaint();
+    const delay = nextTickDelay(this.state(), Date.now());
+    if (delay !== null) {
+      this.repaintId = setTimeout(() => this.tick(Date.now()), delay);
     }
-    this.intervalId = setInterval(() => this.tick(Date.now()), TICK_MS);
   }
 
-  private stopInterval(): void {
-    if (this.intervalId !== null) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
+  private cancelRepaint(): void {
+    if (this.repaintId !== null) {
+      clearTimeout(this.repaintId);
+      this.repaintId = null;
     }
   }
 }
