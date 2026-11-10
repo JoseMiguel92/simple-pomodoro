@@ -1,10 +1,25 @@
-# Simple Pomodoro
+<p align="center">
+  <img src="docs/images/readme-header.webp" alt="Simple Pomodoro" width="800" />
+</p>
 
-**Concentración y descanso, sin distracciones.**
+<p align="center">
+  <a href="https://github.com/JoseMiguel92/simple-pomodoro/actions/workflows/publish.yml">
+    <img
+      src="https://github.com/JoseMiguel92/simple-pomodoro/actions/workflows/publish.yml/badge.svg?branch=master"
+      alt="Publish Site"
+    />
+  </a>
+  <img
+    src="https://img.shields.io/badge/Angular-22-DD0031?logo=angular&logoColor=white"
+    alt="Angular 22"
+  />
+  <img
+    src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white"
+    alt="Tailwind CSS 4"
+  />
+</p>
 
-[![Publish Site](https://github.com/JoseMiguel92/simple-pomodoro/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/JoseMiguel92/simple-pomodoro/actions/workflows/publish.yml)
-![Angular 22](https://img.shields.io/badge/Angular-22-DD0031?logo=angular&logoColor=white)
-![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+## Simple Pomodoro
 
 Aplicación web de un temporizador Pomodoro para mantener la concentración: fases de trabajo y descanso que se alternan solas, un dial que se vacía segundo a segundo y cuatro paletas para elegir el ambiente.
 
